@@ -10,9 +10,8 @@
         "Segoe UI",
         sans-serif;
 
-    color: #d7dde5;
-    background: #080b0f;
-
+    color: #d8d5cd;
+    background: #0a0b0c;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
 }
@@ -23,7 +22,7 @@
 
 html {
     min-width: 320px;
-    background: #080b0f;
+    background: #0a0b0c;
 }
 
 body {
@@ -31,28 +30,33 @@ body {
     min-width: 320px;
     min-height: 100vh;
     background:
-        radial-gradient(
-            circle at top,
-            #18212b 0,
-            #080b0f 42rem
-        );
+        radial-gradient(circle at 50% -10%, rgba(164, 137, 91, 0.08), transparent 34rem),
+        linear-gradient(180deg, #0b0c0e 0%, #090a0b 52%, #08090a 100%);
 }
 
-button,
-a,
-input {
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image:
+        linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: linear-gradient(to bottom, black, transparent 78%);
+}
+
+button, a, input {
     font: inherit;
 }
 
-button,
-a {
+button, a {
     -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-    outline: 2px solid #7dd3fc;
+button:focus-visible, a:focus-visible, input:focus-visible {
+    outline: 2px solid #c9a96a;
     outline-offset: 3px;
 }
 

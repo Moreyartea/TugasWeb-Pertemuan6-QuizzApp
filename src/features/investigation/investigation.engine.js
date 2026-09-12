@@ -11,44 +11,94 @@ import {
     canFinishCase
 } from './investigation.rules.js'
 
-export function createInvestigationEngine(caseItem) {
+export function createInvestigationEngine(
+    caseItem,
+    options = {}
+) {
     if (!caseItem) {
-        throw new Error('Data kasus diperlukan.')
+        throw new Error(
+            'Data kasus diperlukan.'
+        )
     }
 
-    let state = createInitialState()
+    const {
+        onStateChange = null
+    } = options
+
+    let state =
+        createInitialState()
 
     function getState() {
         return state
     }
 
-    function transitionTo(nextPhase) {
-        if (!canTransition(state.phase, nextPhase)) {
-            throw new Error(
-                `Transisi tidak valid: ${state.phase} → ${nextPhase}`
-            )
-        }
+    function updateState(nextState) {
+        state = nextState
 
-        state = {
-            ...state,
-            phase: nextPhase
+        if (onStateChange) {
+            onStateChange(state)
         }
 
         return getState()
     }
 
+    function transitionTo(nextPhase) {
+        if (
+            !canTransition(
+                state.phase,
+                nextPhase
+            )
+        ) {
+            throw new Error(
+                `Transisi tidak valid: ${state.phase} → ${nextPhase}`
+            )
+        }
+
+        return updateState({
+            ...state,
+            phase: nextPhase
+        })
+    }
+
     function startCase() {
-        if (state.phase !== INVESTIGATION_PHASES.IDLE) {
+        if (
+            state.phase !==
+            INVESTIGATION_PHASES.IDLE
+        ) {
             throw new Error(
                 'Investigation sudah dimulai.'
             )
         }
 
-        state = {
+        return updateState({
             ...createInitialState(),
             caseId: caseItem.id,
-            phase: INVESTIGATION_PHASES.BRIEFING,
+            phase:
+                INVESTIGATION_PHASES.BRIEFING,
             startedAt: Date.now()
+        })
+    }
+
+    function restoreState(savedState) {
+        if (!isValidRestorableState(savedState)) {
+            throw new Error(
+                'State investigasi tidak valid.'
+            )
+        }
+
+        if (
+            savedState.caseId !==
+            caseItem.id
+        ) {
+            throw new Error(
+                'State bukan milik kasus ini.'
+            )
+        }
+
+        state = {
+            ...createInitialState(),
+            ...savedState,
+            caseId: caseItem.id
         }
 
         return getState()
@@ -70,12 +120,16 @@ export function createInvestigationEngine(caseItem) {
             )
         }
 
-        const evidence = caseItem.evidence.find(
-            (item) => item.id === evidenceId
-        )
+        const evidence =
+            caseItem.evidence.find(
+                (item) =>
+                    item.id === evidenceId
+            )
 
         if (!evidence) {
-            throw new Error('Evidence tidak ditemukan.')
+            throw new Error(
+                'Evidence tidak ditemukan.'
+            )
         }
 
         if (
@@ -91,20 +145,22 @@ export function createInvestigationEngine(caseItem) {
         }
 
         const alreadyDiscovered =
-            state.discoveredEvidence.includes(evidenceId)
+            state.discoveredEvidence.includes(
+                evidenceId
+            )
 
-        state = {
+        return updateState({
             ...state,
-            currentEvidence: evidenceId,
-            discoveredEvidence: alreadyDiscovered
-                ? state.discoveredEvidence
-                : [
-                      ...state.discoveredEvidence,
-                      evidenceId
-                  ]
-        }
-
-        return getState()
+            currentEvidence:
+                evidenceId,
+            discoveredEvidence:
+                alreadyDiscovered
+                    ? state.discoveredEvidence
+                    : [
+                        ...state.discoveredEvidence,
+                        evidenceId
+                    ]
+        })
     }
 
     function openDeduction(deductionId) {
@@ -117,12 +173,16 @@ export function createInvestigationEngine(caseItem) {
             )
         }
 
-        const deduction = caseItem.deductions.find(
-            (item) => item.id === deductionId
-        )
+        const deduction =
+            caseItem.deductions.find(
+                (item) =>
+                    item.id === deductionId
+            )
 
         if (!deduction) {
-            throw new Error('Deduction tidak ditemukan.')
+            throw new Error(
+                'Deduction tidak ditemukan.'
+            )
         }
 
         if (
@@ -155,12 +215,16 @@ export function createInvestigationEngine(caseItem) {
             )
         }
 
-        const deduction = caseItem.deductions.find(
-            (item) => item.id === deductionId
-        )
+        const deduction =
+            caseItem.deductions.find(
+                (item) =>
+                    item.id === deductionId
+            )
 
         if (!deduction) {
-            throw new Error('Deduction tidak ditemukan.')
+            throw new Error(
+                'Deduction tidak ditemukan.'
+            )
         }
 
         if (
@@ -176,7 +240,8 @@ export function createInvestigationEngine(caseItem) {
         }
 
         const isCorrect =
-            deduction.correctOption === selectedOption
+            deduction.correctOption ===
+            selectedOption
 
         const decision = {
             type: 'DEDUCTION',
@@ -186,7 +251,7 @@ export function createInvestigationEngine(caseItem) {
             timestamp: Date.now()
         }
 
-        state = {
+        const nextState = {
             ...state,
             decisions: [
                 ...state.decisions,
@@ -195,6 +260,8 @@ export function createInvestigationEngine(caseItem) {
         }
 
         if (!isCorrect) {
+            updateState(nextState)
+
             return {
                 correct: false,
                 state: getState()
@@ -206,15 +273,18 @@ export function createInvestigationEngine(caseItem) {
                 deductionId
             )
 
-        state = {
-            ...state,
-            completedDeductions: alreadyCompleted
+        const completedDeductions =
+            alreadyCompleted
                 ? state.completedDeductions
                 : [
-                      ...state.completedDeductions,
-                      deductionId
-                  ]
-        }
+                    ...state.completedDeductions,
+                    deductionId
+                ]
+
+        updateState({
+            ...nextState,
+            completedDeductions
+        })
 
         return {
             correct: true,
@@ -264,16 +334,14 @@ export function createInvestigationEngine(caseItem) {
             timestamp: Date.now()
         }
 
-        state = {
+        return updateState({
             ...state,
             selectedSuspect: suspectId,
             decisions: [
                 ...state.decisions,
                 decision
             ]
-        }
-
-        return getState()
+        })
     }
 
     function finishCase() {
@@ -288,13 +356,12 @@ export function createInvestigationEngine(caseItem) {
             )
         }
 
-        state = {
+        return updateState({
             ...state,
-            phase: INVESTIGATION_PHASES.RESULT,
+            phase:
+                INVESTIGATION_PHASES.RESULT,
             finishedAt: Date.now()
-        }
-
-        return getState()
+        })
     }
 
     function completeCase() {
@@ -307,23 +374,23 @@ export function createInvestigationEngine(caseItem) {
             )
         }
 
-        state = {
+        return updateState({
             ...state,
-            phase: INVESTIGATION_PHASES.COMPLETED
-        }
-
-        return getState()
+            phase:
+                INVESTIGATION_PHASES.COMPLETED
+        })
     }
 
     function reset() {
-        state = createInitialState()
-
-        return getState()
+        return updateState(
+            createInitialState()
+        )
     }
 
     return {
         getState,
         startCase,
+        restoreState,
         beginInvestigation,
         openEvidence,
         openDeduction,
@@ -334,4 +401,54 @@ export function createInvestigationEngine(caseItem) {
         completeCase,
         reset
     }
+}
+
+function isValidRestorableState(
+    savedState
+) {
+    if (
+        !savedState ||
+        typeof savedState !== 'object'
+    ) {
+        return false
+    }
+
+    const validPhases =
+        Object.values(
+            INVESTIGATION_PHASES
+        )
+
+    if (
+        !validPhases.includes(
+            savedState.phase
+        )
+    ) {
+        return false
+    }
+
+    if (
+        !Array.isArray(
+            savedState.discoveredEvidence
+        )
+    ) {
+        return false
+    }
+
+    if (
+        !Array.isArray(
+            savedState.decisions
+        )
+    ) {
+        return false
+    }
+
+    if (
+        !Array.isArray(
+            savedState.completedDeductions
+        )
+    ) {
+        return false
+    }
+
+    return true
 }

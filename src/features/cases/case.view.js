@@ -1,29 +1,66 @@
-import { loadCases } from './case.service.js'
-import { navigate } from '../../app/router.js'
+import {
+    loadCases
+} from './case.service.js'
+
+import {
+    navigate
+} from '../../app/router.js'
+
 import {
     setCurrentCase,
     setInvestigationEngine
 } from '../../app/app-state.js'
-import { createInvestigationEngine } from '../investigation/investigation.engine.js'
 
-export async function renderCaseSelection(container) {
+import {
+    createInvestigationEngine
+} from '../investigation/investigation.engine.js'
+
+import {
+    writeInvestigationSession
+} from '../../infrastructure/storage/session-storage.adapter.js'
+
+export async function renderCaseSelection(
+    container
+) {
     container.replaceChildren()
 
-    const page = document.createElement('main')
-    page.classList.add('case-selection-page')
+    const page =
+        document.createElement('main')
 
-    const header = document.createElement('header')
-    header.classList.add('page-header')
+    page.classList.add(
+        'case-selection-page'
+    )
 
-    const eyebrow = document.createElement('p')
-    eyebrow.classList.add('eyebrow')
-    eyebrow.textContent = 'CASE DATABASE'
+    const header =
+        document.createElement('header')
 
-    const title = document.createElement('h1')
-    title.textContent = 'Pilih Kasus'
+    header.classList.add(
+        'page-header'
+    )
 
-    const description = document.createElement('p')
-    description.classList.add('page-description')
+    const eyebrow =
+        document.createElement('p')
+
+    eyebrow.classList.add(
+        'eyebrow'
+    )
+
+    eyebrow.textContent =
+        'CASE DATABASE'
+
+    const title =
+        document.createElement('h1')
+
+    title.textContent =
+        'Pilih Kasus'
+
+    const description =
+        document.createElement('p')
+
+    description.classList.add(
+        'page-description'
+    )
+
     description.textContent =
         'Pilih satu kasus untuk memulai investigasi. Analisis evidence sebelum menentukan siapa yang paling bertanggung jawab.'
 
@@ -33,12 +70,23 @@ export async function renderCaseSelection(container) {
         description
     )
 
-    const status = document.createElement('p')
-    status.classList.add('loading-status')
-    status.textContent = 'Memuat database kasus...'
+    const status =
+        document.createElement('p')
 
-    const caseGrid = document.createElement('section')
-    caseGrid.classList.add('case-grid')
+    status.classList.add(
+        'loading-status'
+    )
+
+    status.textContent =
+        'Memuat database kasus...'
+
+    const caseGrid =
+        document.createElement('section')
+
+    caseGrid.classList.add(
+        'case-grid'
+    )
+
     caseGrid.setAttribute(
         'aria-label',
         'Daftar kasus'
@@ -53,10 +101,15 @@ export async function renderCaseSelection(container) {
     container.append(page)
 
     try {
-        const cases = await loadCases()
+        const cases =
+            await loadCases()
 
         status.remove()
-        renderCaseCards(caseGrid, cases)
+
+        renderCaseCards(
+            caseGrid,
+            cases
+        )
     } catch (error) {
         renderErrorState(
             caseGrid,
@@ -66,57 +119,146 @@ export async function renderCaseSelection(container) {
     }
 }
 
-function renderCaseCards(container, cases) {
-    cases.forEach((caseItem) => {
-        const card = document.createElement('article')
-        card.classList.add('case-card')
+function renderCaseCards(
+    container,
+    cases
+) {
+    cases.forEach(
+        (caseItem) => {
+            const card =
+                document.createElement('article')
 
-        const code = document.createElement('span')
-        code.classList.add('case-codename')
-        code.textContent = caseItem.codename
+            card.classList.add(
+                'case-card'
+            )
 
-        const title = document.createElement('h2')
-        title.textContent = caseItem.title
+            const image =
+                document.createElement('div')
 
-        const description = document.createElement('p')
-        description.textContent = caseItem.description
+            image.classList.add(
+                'case-card-image'
+            )
 
-        const metadata = document.createElement('div')
-        metadata.classList.add('case-card-meta')
+            image.style.backgroundImage =
+                `url("/images/cases/${caseItem.id}.png")`
 
-        const difficulty = document.createElement('span')
-        difficulty.textContent =
-            `Kesulitan: ${formatDifficulty(caseItem.difficulty)}`
+            const imageOverlay =
+                document.createElement('div')
 
-        const category = document.createElement('span')
-        category.textContent = caseItem.category
+            imageOverlay.classList.add(
+                'case-card-image-overlay'
+            )
 
-        metadata.append(
-            difficulty,
-            category
-        )
+            const imageIndex =
+                document.createElement('span')
 
-        const location = document.createElement('p')
-        location.textContent =
-            `Lokasi: ${caseItem.location}`
+            imageIndex.classList.add(
+                'case-card-index'
+            )
 
-        const button = document.createElement('button')
-        button.type = 'button'
-        button.classList.add('primary-button')
-        button.dataset.caseId = caseItem.id
-        button.textContent = 'Buka Berkas'
+            imageIndex.textContent =
+                caseItem.id.replace('case-', 'CASE ')
 
-        card.append(
-            code,
-            title,
-            description,
-            metadata,
-            location,
-            button
-        )
+            imageOverlay.append(imageIndex)
+            image.append(imageOverlay)
 
-        container.append(card)
-    })
+            const caseBody =
+                document.createElement('div')
+
+            caseBody.classList.add(
+                'case-card-body'
+            )
+
+            const code =
+                document.createElement('span')
+
+            code.classList.add(
+                'case-codename'
+            )
+
+            code.textContent =
+                caseItem.codename
+
+            const title =
+                document.createElement('h2')
+
+            title.textContent =
+                caseItem.title
+
+            const description =
+                document.createElement('p')
+
+            description.classList.add(
+                'case-description'
+            )
+
+            description.textContent =
+                caseItem.description
+
+            const metadata =
+                document.createElement('div')
+
+            metadata.classList.add(
+                'case-card-meta'
+            )
+
+            const difficulty =
+                document.createElement('span')
+
+            difficulty.textContent =
+                `Kesulitan: ${formatDifficulty(
+                    caseItem.difficulty
+                )}`
+
+            const category =
+                document.createElement('span')
+
+            category.textContent =
+                caseItem.category
+
+            metadata.append(
+                difficulty,
+                category
+            )
+
+            const location =
+                document.createElement('p')
+
+            location.textContent =
+                `Lokasi: ${caseItem.location}`
+
+            const button =
+                document.createElement('button')
+
+            button.type = 'button'
+
+            button.classList.add(
+                'primary-button'
+            )
+
+            button.dataset.caseId =
+                caseItem.id
+
+            button.textContent =
+                'Buka Berkas'
+
+            caseBody.append(
+                code,
+                title,
+                description,
+                metadata,
+                location,
+                button
+            )
+
+            card.append(
+                image,
+                caseBody
+            )
+
+            container.append(card)
+        }
+    )
 
     container.addEventListener(
         'click',
@@ -124,28 +266,36 @@ function renderCaseCards(container, cases) {
     )
 }
 
-function handleCaseSelection(event) {
-    const button = event.target.closest(
-        '[data-case-id]'
-    )
+function handleCaseSelection(
+    event
+) {
+    const button =
+        event.target.closest(
+            '[data-case-id]'
+        )
 
     if (!button) {
         return
     }
 
-    const caseId = button.dataset.caseId
+    const caseId =
+        button.dataset.caseId
 
     selectCase(caseId)
 }
 
-async function selectCase(caseId) {
+async function selectCase(
+    caseId
+) {
     try {
-        const cases = await loadCases()
+        const cases =
+            await loadCases()
 
-        const selectedCase = cases.find(
-            (caseItem) =>
-                caseItem.id === caseId
-        )
+        const selectedCase =
+            cases.find(
+                (caseItem) =>
+                    caseItem.id === caseId
+            )
 
         if (!selectedCase) {
             throw new Error(
@@ -155,15 +305,26 @@ async function selectCase(caseId) {
 
         const engine =
             createInvestigationEngine(
-                selectedCase
+                selectedCase,
+                {
+                    onStateChange:
+                        writeInvestigationSession
+                }
             )
 
         engine.startCase()
 
-        setCurrentCase(selectedCase)
-        setInvestigationEngine(engine)
+        setCurrentCase(
+            selectedCase
+        )
 
-        navigate(`/case/${caseId}`)
+        setInvestigationEngine(
+            engine
+        )
+
+        navigate(
+            `/case/${caseId}`
+        )
     } catch (error) {
         console.error(error)
     }
@@ -174,16 +335,24 @@ function renderErrorState(
     titleText,
     message
 ) {
-    const error = document.createElement('div')
-    error.classList.add('error-state')
+    const error =
+        document.createElement('div')
 
-    const title = document.createElement('h2')
-    title.textContent = titleText
+    error.classList.add(
+        'error-state'
+    )
+
+    const title =
+        document.createElement('h2')
+
+    title.textContent =
+        titleText
 
     const description =
         document.createElement('p')
 
-    description.textContent = message
+    description.textContent =
+        message
 
     error.append(
         title,
@@ -193,12 +362,17 @@ function renderErrorState(
     container.append(error)
 }
 
-function formatDifficulty(difficulty) {
+function formatDifficulty(
+    difficulty
+) {
     const labels = {
         easy: 'Mudah',
         medium: 'Menengah',
         hard: 'Sulit'
     }
 
-    return labels[difficulty] ?? difficulty
+    return (
+        labels[difficulty] ??
+        difficulty
+    )
 }

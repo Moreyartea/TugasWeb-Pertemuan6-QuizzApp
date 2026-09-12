@@ -26,8 +26,26 @@ import {
 } from '../features/history/history.view.js'
 
 import {
-    getAppState
+    getAppState,
+    setCurrentCase,
+    setInvestigationEngine
 } from './app-state.js'
+
+import {
+    createNavbar
+} from '../shared/ui/navbar.js'
+
+import {
+    loadCase
+} from '../features/cases/case.service.js'
+
+import {
+    createInvestigationEngine
+} from '../features/investigation/investigation.engine.js'
+
+import {
+    readInvestigationSession
+} from '../infrastructure/storage/session-storage.adapter.js'
 
 export function bootstrap() {
     const app =
@@ -35,17 +53,29 @@ export function bootstrap() {
 
     registerRoute(
         '/',
-        () => renderLanding(app)
+        () =>
+            renderAppRoute(
+                app,
+                renderLanding
+            )
     )
 
     registerRoute(
         '/cases',
-        () => renderCaseSelection(app)
+        () =>
+            renderAppRoute(
+                app,
+                renderCaseSelection
+            )
     )
 
     registerRoute(
         '/history',
-        () => renderHistory(app)
+        () =>
+            renderAppRoute(
+                app,
+                renderHistory
+            )
     )
 
     registerRoute(
@@ -76,8 +106,51 @@ export function bootstrap() {
     )
 
     setNotFoundHandler(
-        () => renderNotFound(app)
+        () =>
+            renderNotFound(app)
     )
+}
+
+function renderAppRoute(
+    app,
+    renderPage
+) {
+    const content =
+        createAppShell(app)
+
+    renderPage(content)
+}
+
+function createAppShell(app) {
+    app.replaceChildren()
+
+    const shell =
+        document.createElement('div')
+
+    shell.classList.add(
+        'app-shell'
+    )
+
+    const navbar =
+        createNavbar()
+
+    const content =
+        document.createElement('div')
+
+    content.id = 'app-content'
+
+    content.classList.add(
+        'app-content'
+    )
+
+    shell.append(
+        navbar,
+        content
+    )
+
+    app.append(shell)
+
+    return content
 }
 
 function renderCaseBriefingRoute(
@@ -98,14 +171,17 @@ function renderCaseBriefingRoute(
         return
     }
 
-    renderBriefing(app)
+    renderAppRoute(
+        app,
+        renderBriefing
+    )
 }
 
-function renderInvestigationRoute(
+async function renderInvestigationRoute(
     app,
     caseId
 ) {
-    const {
+    let {
         currentCase,
         investigationEngine
     } = getAppState()
@@ -115,11 +191,49 @@ function renderInvestigationRoute(
         currentCase.id !== caseId ||
         !investigationEngine
     ) {
-        navigate('/cases')
-        return
+        const savedState =
+            readInvestigationSession()
+
+        if (
+            !savedState ||
+            savedState.caseId !== caseId
+        ) {
+            navigate('/cases')
+            return
+        }
+
+        try {
+            currentCase =
+                await loadCase(caseId)
+
+            investigationEngine =
+                createInvestigationEngine(
+                    currentCase
+                )
+
+            investigationEngine.restoreState(
+                savedState
+            )
+
+            setCurrentCase(
+                currentCase
+            )
+
+            setInvestigationEngine(
+                investigationEngine
+            )
+        } catch (error) {
+            console.error(error)
+
+            navigate('/cases')
+            return
+        }
     }
 
-    renderInvestigation(app)
+    renderAppRoute(
+        app,
+        renderInvestigation
+    )
 }
 
 function renderResultRoute(
@@ -140,21 +254,28 @@ function renderResultRoute(
         return
     }
 
-    renderResult(app)
+    renderAppRoute(
+        app,
+        renderResult
+    )
 }
 
 function renderNotFound(app) {
-    app.replaceChildren()
+    const content =
+        createAppShell(app)
 
     const page =
         document.createElement('main')
 
-    page.classList.add('not-found-page')
+    page.classList.add(
+        'not-found-page'
+    )
 
     const title =
         document.createElement('h1')
 
-    title.textContent = '404'
+    title.textContent =
+        '404'
 
     const description =
         document.createElement('p')
@@ -166,9 +287,16 @@ function renderNotFound(app) {
         document.createElement('a')
 
     link.href = '/cases'
-    link.dataset.route = '/cases'
-    link.classList.add('primary-button')
-    link.textContent = 'Kembali ke Kasus'
+
+    link.dataset.route =
+        '/cases'
+
+    link.classList.add(
+        'primary-button'
+    )
+
+    link.textContent =
+        'Kembali ke Kasus'
 
     page.append(
         title,
@@ -176,5 +304,5 @@ function renderNotFound(app) {
         link
     )
 
-    app.append(page)
+    content.append(page)
 }

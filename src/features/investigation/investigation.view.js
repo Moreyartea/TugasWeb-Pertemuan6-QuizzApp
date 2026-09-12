@@ -42,7 +42,16 @@ export function renderBriefing(container) {
     description
   )
 
-  page.append(header)
+  const caseVisual = document.createElement('section')
+  caseVisual.classList.add('case-hero-visual')
+  caseVisual.style.backgroundImage =
+    `url("/images/cases/${currentCase.id}.png")`
+
+  const visualLabel = document.createElement('span')
+  visualLabel.textContent = currentCase.codename
+
+  caseVisual.append(visualLabel)
+  page.append(header, caseVisual)
 
   const metadata = document.createElement('section')
   metadata.classList.add('briefing-meta')
