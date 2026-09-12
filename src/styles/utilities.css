@@ -1,0 +1,54 @@
+@media (max-width: 800px) {
+    .case-selection-page,
+    .investigation-page,
+    .deduction-page,
+    .feedback-page,
+    .not-found-page {
+        padding: 40px 0;
+    }
+
+    .investigation-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .briefing-metadata {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .case-selection-page,
+    .investigation-page,
+    .deduction-page,
+    .feedback-page,
+    .not-found-page {
+        width: min(
+            100% - 24px,
+            1180px
+        );
+    }
+
+    .case-card {
+        min-height: 300px;
+    }
+
+    .briefing-card {
+        padding: 20px;
+    }
+}
+
+@media (
+    prefers-reduced-motion: reduce
+) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration:
+            0.01ms !important;
+        animation-duration:
+            0.01ms !important;
+        animation-iteration-count:
+            1 !important;
+    }
+}

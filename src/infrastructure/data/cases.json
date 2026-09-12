@@ -1,0 +1,1696 @@
+[
+  {
+    "id": "case-001",
+    "codename": "THE MISSING FILE",
+    "title": "Arsip 17 yang Hilang",
+    "category": "Investigasi Internal",
+    "difficulty": "easy",
+    "location": "Ruang Arsip Fakultas",
+    "estimatedTime": 5,
+    "description": "Satu berkas penelitian lama berkode ARS-17 hilang dari ruang arsip tanpa tanda pembobolan.",
+    "briefing": "ARS-17 terakhir tercatat berada di ruang arsip pada sore hari. Pada malam yang sama, sistem mencatat satu pembukaan pintu menggunakan kartu akses resmi. Tentukan siapa yang paling mungkin mengambil berkas tersebut berdasarkan rangkaian evidence, bukan hanya satu petunjuk.",
+    "suspects": [
+      {
+        "id": "suspect-001",
+        "name": "Raka Pradana",
+        "occupation": "Asisten Laboratorium",
+        "description": "Memiliki akses penuh ke ruang arsip dan mengetahui susunan berkas penelitian.",
+        "traits": [
+          "Memiliki kartu akses arsip",
+          "Bekerja di laboratorium hingga malam"
+        ]
+      },
+      {
+        "id": "suspect-002",
+        "name": "Naya Putri",
+        "occupation": "Staf Administrasi",
+        "description": "Memiliki akses terbatas untuk mengurus dokumen dan administrasi penelitian.",
+        "traits": [
+          "Memiliki akses administratif",
+          "Sering menangani formulir arsip"
+        ]
+      },
+      {
+        "id": "suspect-003",
+        "name": "Dimas Arga",
+        "occupation": "Mahasiswa Peneliti",
+        "description": "Sedang melakukan penelitian yang menggunakan beberapa dokumen lama dari arsip.",
+        "traits": [
+          "Pernah meminta Arsip 17",
+          "Tidak memiliki akses kartu arsip"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-001",
+        "title": "Log Kartu Akses",
+        "type": "ACCESS_LOG",
+        "description": "Sistem keamanan mencatat pembukaan pintu ruang arsip pada pukul 21.17 menggunakan kartu RAKA-04.",
+        "clue": "Kartu milik Raka digunakan untuk membuka ruang arsip pukul 21.17.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-002",
+        "title": "CCTV Koridor",
+        "type": "CCTV",
+        "description": "Rekaman koridor menunjukkan seseorang mengenakan jaket laboratorium memasuki area arsip sekitar pukul 21.15.",
+        "clue": "Seseorang dengan ciri pakaian laboratorium berada di sekitar ruang arsip beberapa menit sebelum akses kartu tercatat.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-003",
+        "title": "Catatan Peminjaman",
+        "type": "DOCUMENT",
+        "description": "Tiga hari sebelum kehilangan, Dimas mengajukan permintaan untuk melihat Arsip 17.",
+        "clue": "Dimas mempunyai alasan untuk tertarik pada Arsip 17, tetapi catatan ini tidak menunjukkan bahwa ia masuk ke ruang arsip malam kejadian.",
+        "relevance": "red-herring",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-004",
+        "title": "Formulir Akses",
+        "type": "DOCUMENT",
+        "description": "Sebuah formulir akses dokumen ditemukan belum selesai di meja administrasi.",
+        "clue": "Ada aktivitas administrasi terkait dokumen, tetapi formulir tidak menunjukkan siapa yang mengambil Arsip 17.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-005",
+        "title": "Rekaman Printer Laboratorium",
+        "type": "DIGITAL",
+        "description": "Printer laboratorium mencetak dokumen dari komputer Raka pada pukul 21.28, sebelas menit setelah akses ruang arsip.",
+        "clue": "Komputer Raka aktif melakukan pencetakan dokumen tidak lama setelah kartu Raka digunakan di ruang arsip.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-001"
+        }
+      },
+      {
+        "id": "evidence-006",
+        "title": "Daftar Dokumen Cetak",
+        "type": "DOCUMENT",
+        "description": "Riwayat printer menunjukkan dokumen yang dicetak dari komputer Raka menggunakan nama file yang berkaitan dengan kode ARS-17.",
+        "clue": "Aktivitas pencetakan dari komputer Raka berkaitan langsung dengan berkas yang hilang.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-002"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-001",
+        "prompt": "Berdasarkan log akses dan CCTV, kesimpulan sementara mana yang paling kuat?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Raka adalah orang yang memiliki akses tercatat ke ruang arsip saat kejadian."
+          },
+          {
+            "id": "b",
+            "text": "Dimas pasti mengambil Arsip 17 karena pernah memintanya."
+          },
+          {
+            "id": "c",
+            "text": "Naya menggunakan kartu Raka untuk masuk ke ruang arsip."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-001",
+          "evidence-002"
+        ],
+        "explanation": "Log akses secara langsung menghubungkan kartu Raka dengan pintu arsip, sedangkan CCTV hanya memberikan dukungan konteks.",
+        "unlocks": [
+          "evidence-005"
+        ]
+      },
+      {
+        "id": "deduction-002",
+        "prompt": "Apa arti paling kuat dari rekaman printer setelah akses ruang arsip?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Raka pasti hanya mencetak dokumen pribadi."
+          },
+          {
+            "id": "b",
+            "text": "Aktivitas komputer Raka terjadi dekat dengan waktu akses dan perlu dikaitkan dengan berkas yang hilang."
+          },
+          {
+            "id": "c",
+            "text": "Printer membuktikan Dimas berada di laboratorium."
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-001",
+          "evidence-005"
+        ],
+        "explanation": "Waktu akses dan aktivitas pencetakan yang berdekatan memperkuat hubungan Raka dengan aktivitas setelah masuk ke arsip.",
+        "unlocks": [
+          "evidence-006"
+        ]
+      },
+      {
+        "id": "deduction-003",
+        "prompt": "Setelah melihat daftar dokumen cetak, siapa yang paling kuat terhubung dengan hilangnya Arsip 17?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Raka Pradana"
+          },
+          {
+            "id": "b",
+            "text": "Naya Putri"
+          },
+          {
+            "id": "c",
+            "text": "Dimas Arga"
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-005",
+          "evidence-006"
+        ],
+        "explanation": "Akses ruang arsip, aktivitas komputer, dan nama file yang berkaitan dengan ARS-17 membentuk rangkaian bukti yang konsisten terhadap Raka.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-001",
+      "requiredEvidence": [
+        "evidence-001",
+        "evidence-005",
+        "evidence-006"
+      ],
+      "requiredDeductions": [
+        "deduction-001",
+        "deduction-002",
+        "deduction-003"
+      ],
+      "explanation": "Raka adalah suspect yang paling kuat karena kartu aksesnya digunakan di ruang arsip, komputer miliknya aktif tidak lama kemudian, dan daftar cetak berkaitan langsung dengan ARS-17."
+    }
+  },
+  {
+    "id": "case-002",
+    "codename": "SILENT ACCESS",
+    "title": "Jejak di Ruang Server",
+    "category": "Investigasi Digital",
+    "difficulty": "medium",
+    "location": "Ruang Server Gedung Teknologi Informasi",
+    "estimatedTime": 7,
+    "description": "Konfigurasi penting pada server berubah tanpa izin pada dini hari tanpa ada kerusakan fisik.",
+    "briefing": "Perubahan konfigurasi tercatat pukul 02.13. Tiga orang mempunyai akses ke area server. Tentukan siapa yang paling mungkin melakukan perubahan berdasarkan jejak digital dan akses fisik.",
+    "suspects": [
+      {
+        "id": "suspect-004",
+        "name": "Arman Wijaya",
+        "occupation": "Teknisi Jaringan",
+        "description": "Bertanggung jawab atas perangkat jaringan dan memiliki akses teknis ke ruang server.",
+        "traits": [
+          "Memahami konfigurasi jaringan",
+          "Tidak mendapat jadwal shift malam"
+        ]
+      },
+      {
+        "id": "suspect-005",
+        "name": "Siska Rahma",
+        "occupation": "Administrator Sistem",
+        "description": "Mengelola server dan mendapat jadwal piket malam pada hari kejadian.",
+        "traits": [
+          "Memiliki hak administrasi server",
+          "Bertugas malam"
+        ]
+      },
+      {
+        "id": "suspect-006",
+        "name": "Fajar Nugraha",
+        "occupation": "Asisten Teknisi",
+        "description": "Membantu pekerjaan teknis tetapi aksesnya lebih terbatas daripada administrator.",
+        "traits": [
+          "Pernah meminta perubahan konfigurasi",
+          "Akses sistem terbatas"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-007",
+        "title": "Server Log",
+        "type": "DIGITAL",
+        "description": "Server mencatat perubahan konfigurasi pada pukul 02.13 dari terminal internal.",
+        "clue": "Perubahan dilakukan dari jaringan internal pada pukul 02.13.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-008",
+        "title": "Log Pintu Server",
+        "type": "ACCESS_LOG",
+        "description": "Kartu Siska digunakan untuk membuka pintu ruang server pada pukul 02.08.",
+        "clue": "Siska berada di lokasi lima menit sebelum perubahan konfigurasi tercatat.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-009",
+        "title": "Jadwal Shift",
+        "type": "DOCUMENT",
+        "description": "Jadwal resmi menunjukkan Siska bertugas sebagai administrator malam pada hari kejadian.",
+        "clue": "Keberadaan Siska di ruang server pada dini hari sesuai dengan jadwal kerjanya.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-010",
+        "title": "Permintaan Perubahan Fajar",
+        "type": "DOCUMENT",
+        "description": "Sehari sebelumnya Fajar meminta Siska mengubah konfigurasi tertentu untuk pengujian.",
+        "clue": "Fajar mempunyai alasan terkait konfigurasi, tetapi permintaan itu sendiri tidak membuktikan bahwa ia melakukan perubahan.",
+        "relevance": "red-herring",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-011",
+        "title": "Riwayat Terminal",
+        "type": "DIGITAL",
+        "description": "Terminal 2 menjalankan perintah perubahan konfigurasi pada pukul 02.13 dan terminal tersebut berada di ruang server.",
+        "clue": "Perintah dijalankan dari terminal yang berada di lokasi fisik yang baru saja dimasuki Siska.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-004"
+        }
+      },
+      {
+        "id": "evidence-012",
+        "title": "Rekaman Kamera Internal",
+        "type": "CCTV",
+        "description": "Kamera internal menunjukkan Siska berada di depan terminal 2 sekitar pukul 02.12.",
+        "clue": "Siska terlihat di terminal yang sama satu menit sebelum perubahan konfigurasi.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-005"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-004",
+        "prompt": "Siapa yang paling kuat terhubung dengan lokasi dan waktu perubahan berdasarkan log pintu serta jadwal?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Arman"
+          },
+          {
+            "id": "b",
+            "text": "Siska"
+          },
+          {
+            "id": "c",
+            "text": "Fajar"
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-007",
+          "evidence-008",
+          "evidence-009"
+        ],
+        "explanation": "Siska masuk lima menit sebelum perubahan dan memang dijadwalkan bertugas malam.",
+        "unlocks": [
+          "evidence-011"
+        ]
+      },
+      {
+        "id": "deduction-005",
+        "prompt": "Apa kesimpulan yang paling tepat dari riwayat Terminal 2?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Perubahan berasal dari terminal internal di ruang server."
+          },
+          {
+            "id": "b",
+            "text": "Fajar pasti menjalankan perintah dari luar gedung."
+          },
+          {
+            "id": "c",
+            "text": "Log server tidak dapat dipercaya."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-008",
+          "evidence-011"
+        ],
+        "explanation": "Riwayat terminal mempersempit lokasi perubahan ke terminal internal ruang server.",
+        "unlocks": [
+          "evidence-012"
+        ]
+      },
+      {
+        "id": "deduction-006",
+        "prompt": "Siapa yang paling kuat terhubung dengan perubahan konfigurasi setelah seluruh evidence diperiksa?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Arman"
+          },
+          {
+            "id": "b",
+            "text": "Siska"
+          },
+          {
+            "id": "c",
+            "text": "Fajar"
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-011",
+          "evidence-012"
+        ],
+        "explanation": "Siska terlihat di terminal yang menjalankan perubahan tepat sebelum waktu perubahan tercatat.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-005",
+      "requiredEvidence": [
+        "evidence-008",
+        "evidence-011",
+        "evidence-012"
+      ],
+      "requiredDeductions": [
+        "deduction-004",
+        "deduction-005",
+        "deduction-006"
+      ],
+      "explanation": "Siska memiliki akses administratif, sedang bertugas malam, masuk ke ruang server sebelum kejadian, dan terlihat di terminal yang menjalankan perubahan."
+    }
+  },
+  {
+    "id": "case-003",
+    "codename": "FROZEN MINUTE",
+    "title": "Jam yang Berhenti",
+    "category": "Investigasi Kronologi",
+    "difficulty": "medium",
+    "location": "Gedung Seni",
+    "estimatedTime": 8,
+    "description": "Sebuah kamera dokumentasi hilang dari ruang pamer, sementara jam dinding di ruangan menunjukkan waktu yang tampaknya tidak sesuai.",
+    "briefing": "Ketika investigator tiba, jam dinding menunjukkan pukul 18.42. Waktu itu sempat dianggap sebagai waktu hilangnya kamera. Periksa evidence lain dan tentukan siapa yang paling mungkin bertanggung jawab.",
+    "suspects": [
+      {
+        "id": "suspect-007",
+        "name": "Bima Saputra",
+        "occupation": "Petugas Keamanan",
+        "description": "Menjaga gedung seni dan dapat melihat aktivitas koridor melalui pos keamanan.",
+        "traits": [
+          "Memiliki akses keamanan",
+          "Bertugas sampai malam"
+        ]
+      },
+      {
+        "id": "suspect-008",
+        "name": "Lani Maharani",
+        "occupation": "Kurator Pameran",
+        "description": "Mengelola ruang pamer dan bertanggung jawab atas inventaris karya.",
+        "traits": [
+          "Memiliki akses ruang pamer",
+          "Mengetahui posisi kamera"
+        ]
+      },
+      {
+        "id": "suspect-009",
+        "name": "Yoga Prasetyo",
+        "occupation": "Teknisi Instalasi",
+        "description": "Menangani perangkat listrik dan peralatan teknis di gedung seni.",
+        "traits": [
+          "Memperbaiki jam dinding",
+          "Memiliki akses teknis"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-013",
+        "title": "Jam Dinding",
+        "type": "OBJECT",
+        "description": "Jam dinding di ruang pamer berhenti pada pukul 18.42.",
+        "clue": "Jam berhenti pada 18.42, tetapi belum ada bukti bahwa waktu itu sama dengan waktu hilangnya kamera.",
+        "relevance": "red-herring",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-014",
+        "title": "CCTV Koridor",
+        "type": "CCTV",
+        "description": "Rekaman menunjukkan seseorang membawa kamera keluar dari ruang pamer pada pukul 19.16.",
+        "clue": "Kamera terlihat keluar setelah 19.00, sehingga waktu 18.42 tidak dapat langsung dijadikan waktu kejadian.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-015",
+        "title": "Log Pintu Ruang Pamer",
+        "type": "ACCESS_LOG",
+        "description": "Pintu ruang pamer dibuka pada pukul 19.11 dan ditutup pada pukul 19.19.",
+        "clue": "Ada aktivitas masuk dan keluar dalam rentang yang mencakup waktu kamera dibawa pergi.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-016",
+        "title": "Laporan Teknisi",
+        "type": "DOCUMENT",
+        "description": "Catatan pekerjaan menunjukkan Yoga memperbaiki jam dinding sekitar pukul 18.30.",
+        "clue": "Jam pernah ditangani sebelum kamera hilang, sehingga angka 18.42 tidak otomatis menunjukkan waktu kejadian.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-017",
+        "title": "Foto Dokumentasi Ruangan",
+        "type": "PHOTOGRAPH",
+        "description": "Foto kondisi ruang pamer yang diambil pukul 19.05 memperlihatkan jam masih menunjukkan 18.42.",
+        "clue": "Jam sudah berhenti sebelum kamera benar-benar terlihat dibawa keluar.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-007"
+        }
+      },
+      {
+        "id": "evidence-018",
+        "title": "CCTV Area Servis",
+        "type": "CCTV",
+        "description": "Rekaman area servis memperlihatkan Yoga memasuki ruang pamer melalui pintu samping pada pukul 19.10 dan keluar pada 19.20 dengan tas peralatan.",
+        "clue": "Yoga berada di area ruang pamer pada rentang waktu yang sama dengan log pintu dan kejadian.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-008"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-007",
+        "prompt": "Apa kesimpulan yang paling tepat tentang jam yang menunjukkan 18.42?",
+        "options": [
+          {
+            "id": "a",
+            "text": "18.42 pasti merupakan waktu kamera hilang."
+          },
+          {
+            "id": "b",
+            "text": "Jam tidak dapat langsung dijadikan penentu waktu kejadian karena sudah bermasalah sebelum kejadian."
+          },
+          {
+            "id": "c",
+            "text": "Jam membuktikan Bima berada di ruang pamer."
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-013",
+          "evidence-014",
+          "evidence-016"
+        ],
+        "explanation": "Jam sudah ditangani teknisi sebelum kejadian dan tetap menunjukkan 18.42 pada foto pukul 19.05.",
+        "unlocks": [
+          "evidence-017"
+        ]
+      },
+      {
+        "id": "deduction-008",
+        "prompt": "Rentang waktu mana yang paling relevan untuk mencari pelaku?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Sekitar 18.42 saja."
+          },
+          {
+            "id": "b",
+            "text": "Sekitar 19.10 sampai 19.20."
+          },
+          {
+            "id": "c",
+            "text": "Setelah tengah malam."
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-014",
+          "evidence-015",
+          "evidence-017"
+        ],
+        "explanation": "CCTV, log pintu, dan foto menunjukkan bahwa kejadian relevan berlangsung setelah 19.00.",
+        "unlocks": [
+          "evidence-018"
+        ]
+      },
+      {
+        "id": "deduction-009",
+        "prompt": "Siapa yang paling kuat terhubung dengan kronologi setelah seluruh evidence diperiksa?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Bima Saputra"
+          },
+          {
+            "id": "b",
+            "text": "Lani Maharani"
+          },
+          {
+            "id": "c",
+            "text": "Yoga Prasetyo"
+          }
+        ],
+        "correctOption": "c",
+        "evidenceRequired": [
+          "evidence-015",
+          "evidence-018"
+        ],
+        "explanation": "Yoga berada di area ruang pamer pada waktu yang sama dengan akses pintu dan membawa tas peralatan ketika keluar.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-009",
+      "requiredEvidence": [
+        "evidence-014",
+        "evidence-017",
+        "evidence-018"
+      ],
+      "requiredDeductions": [
+        "deduction-007",
+        "deduction-008",
+        "deduction-009"
+      ],
+      "explanation": "Kronologi menunjukkan kamera dibawa keluar sekitar 19.16. Yoga berada di area pada rentang tersebut dan terekam keluar dengan tas peralatan."
+    }
+  },
+  {
+    "id": "case-004",
+    "codename": "WRONG PACKAGE",
+    "title": "Paket yang Tertukar",
+    "category": "Pelacakan Evidence",
+    "difficulty": "easy",
+    "location": "Ruang Penerimaan Barang",
+    "estimatedTime": 5,
+    "description": "Paket penelitian yang seharusnya dikirim ke Laboratorium A tiba dengan isi dan label tujuan yang berbeda.",
+    "briefing": "Sistem pengiriman tidak menunjukkan paket hilang. Masalahnya kemungkinan terjadi ketika paket masih berada dalam jalur resmi. Telusuri perubahan label dan orang yang memiliki kesempatan melakukan pertukaran.",
+    "suspects": [
+      {
+        "id": "suspect-010",
+        "name": "Reza Maulana",
+        "occupation": "Petugas Penerimaan",
+        "description": "Menerima dan mencatat barang yang masuk ke fasilitas.",
+        "traits": [
+          "Menguasai meja penerimaan",
+          "Mencatat paket masuk"
+        ]
+      },
+      {
+        "id": "suspect-011",
+        "name": "Mira Anggraini",
+        "occupation": "Staf Laboratorium",
+        "description": "Menangani kebutuhan laboratorium dan sempat memeriksa paket sebelum dikirim.",
+        "traits": [
+          "Mengetahui isi paket",
+          "Berada dekat area sortir"
+        ]
+      },
+      {
+        "id": "suspect-012",
+        "name": "Aldi Kurniawan",
+        "occupation": "Petugas Pengiriman",
+        "description": "Mengambil paket dari ruang sortir dan mengantarkannya ke tujuan.",
+        "traits": [
+          "Memproses paket keluar",
+          "Menguasai jalur pengiriman"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-019",
+        "title": "Label Paket",
+        "type": "OBJECT",
+        "description": "Nomor paket tetap benar, tetapi label tujuan Laboratorium A tertempel di atas bekas label tujuan lain.",
+        "clue": "Label tujuan pernah diganti setelah paket mendapatkan label sebelumnya.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-020",
+        "title": "CCTV Area Sortir",
+        "type": "CCTV",
+        "description": "Mira terlihat memeriksa paket di meja sortir sebelum paket dibawa oleh petugas pengiriman.",
+        "clue": "Mira mempunyai kesempatan menyentuh paket sebelum dikirim.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-021",
+        "title": "Log Pengiriman",
+        "type": "ACCESS_LOG",
+        "description": "Paket diproses keluar oleh Aldi sesuai prosedur pengiriman.",
+        "clue": "Aldi memang membawa paket, tetapi proses pengiriman tercatat sesuai jalur resmi.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-022",
+        "title": "Catatan Penerimaan",
+        "type": "DOCUMENT",
+        "description": "Reza menerima paket dan mencatat nomor paket yang benar.",
+        "clue": "Kesalahan tidak terlihat terjadi pada saat Reza menerima paket.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-023",
+        "title": "Label Lama",
+        "type": "OBJECT",
+        "description": "Label tujuan Laboratorium B ditemukan di tempat sampah dekat meja sortir.",
+        "clue": "Label lama dilepas di area yang dapat dijangkau Mira sebelum paket dikirim.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-010"
+        }
+      },
+      {
+        "id": "evidence-024",
+        "title": "Rekaman Meja Sortir",
+        "type": "CCTV",
+        "description": "Mira terlihat mengambil label dari laci meja sortir dan menempelkan sesuatu pada paket sebelum Aldi datang.",
+        "clue": "Mira terlihat melakukan aktivitas pada paket sebelum proses pengiriman dimulai.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-011"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-010",
+        "prompt": "Di tahap mana pertukaran label paling mungkin terjadi?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Setelah paket diterima dan sebelum proses pengiriman keluar."
+          },
+          {
+            "id": "b",
+            "text": "Setelah paket tiba di Laboratorium A."
+          },
+          {
+            "id": "c",
+            "text": "Sebelum paket masuk sistem penerimaan."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-019",
+          "evidence-020",
+          "evidence-022"
+        ],
+        "explanation": "Label berubah ketika paket masih berada di area sortir setelah diterima dan sebelum dibawa keluar.",
+        "unlocks": [
+          "evidence-023"
+        ]
+      },
+      {
+        "id": "deduction-011",
+        "prompt": "Siapa yang mempunyai kesempatan paling jelas mengganti label sebelum paket dikirim?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Reza"
+          },
+          {
+            "id": "b",
+            "text": "Mira"
+          },
+          {
+            "id": "c",
+            "text": "Aldi"
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-020",
+          "evidence-023"
+        ],
+        "explanation": "Mira berada di meja sortir dan label lama ditemukan di area yang sama sebelum Aldi mengambil paket.",
+        "unlocks": [
+          "evidence-024"
+        ]
+      },
+      {
+        "id": "deduction-012",
+        "prompt": "Siapa yang paling mungkin melakukan pertukaran paket berdasarkan rekaman terakhir?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Reza Maulana"
+          },
+          {
+            "id": "b",
+            "text": "Mira Anggraini"
+          },
+          {
+            "id": "c",
+            "text": "Aldi Kurniawan"
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-021",
+          "evidence-024"
+        ],
+        "explanation": "Aldi menjalankan proses pengiriman setelah Mira terlihat melakukan aktivitas pada paket.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-011",
+      "requiredEvidence": [
+        "evidence-019",
+        "evidence-023",
+        "evidence-024"
+      ],
+      "requiredDeductions": [
+        "deduction-010",
+        "deduction-011",
+        "deduction-012"
+      ],
+      "explanation": "Pertukaran terjadi di area sortir sebelum pengiriman. Mira memiliki kesempatan dan terekam melakukan aktivitas pada paket sebelum Aldi membawanya keluar."
+    }
+  },
+  {
+    "id": "case-005",
+    "codename": "EAST WING",
+    "title": "Lampu Gudang Timur",
+    "category": "Investigasi Fisik",
+    "difficulty": "medium",
+    "location": "Gudang Peralatan Kampus",
+    "estimatedTime": 8,
+    "description": "Beberapa peralatan kamera hilang dari gudang timur setelah kamera pengawas kehilangan daya.",
+    "briefing": "Sensor gerak mendeteksi aktivitas pukul 23.48. Kamera pengawas mati beberapa menit sebelumnya karena panel listrik kehilangan daya. Tentukan siapa yang paling mungkin memanfaatkan situasi tersebut.",
+    "suspects": [
+      {
+        "id": "suspect-013",
+        "name": "Tio Ramadhan",
+        "occupation": "Petugas Gudang",
+        "description": "Bertanggung jawab terhadap inventaris dan akses harian gudang.",
+        "traits": [
+          "Mengetahui inventaris",
+          "Memiliki akses gudang"
+        ]
+      },
+      {
+        "id": "suspect-014",
+        "name": "Hana Lestari",
+        "occupation": "Fotografer Kegiatan",
+        "description": "Sering meminjam kamera untuk dokumentasi kegiatan kampus.",
+        "traits": [
+          "Pernah meminjam kamera",
+          "Tidak memiliki akses panel listrik"
+        ]
+      },
+      {
+        "id": "suspect-015",
+        "name": "Reno Aditya",
+        "occupation": "Teknisi Fasilitas",
+        "description": "Menangani panel listrik dan sistem fasilitas gedung.",
+        "traits": [
+          "Memiliki akses panel",
+          "Dijadwalkan memeriksa fasilitas malam hari"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-025",
+        "title": "Sensor Gerak",
+        "type": "DIGITAL",
+        "description": "Sensor gudang mencatat aktivitas pada pukul 23.48.",
+        "clue": "Ada seseorang atau sesuatu bergerak di gudang setelah kamera kehilangan daya.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-026",
+        "title": "Panel Listrik",
+        "type": "OBJECT",
+        "description": "Panel listrik menunjukkan kamera pengawas kehilangan daya pada pukul 23.42.",
+        "clue": "Kamera mati enam menit sebelum sensor gerak aktif.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-027",
+        "title": "Jadwal Teknisi",
+        "type": "DOCUMENT",
+        "description": "Reno dijadwalkan memeriksa panel fasilitas gudang pada malam kejadian.",
+        "clue": "Reno mempunyai alasan sah untuk berada dekat panel listrik.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-028",
+        "title": "Form Peminjaman Kamera",
+        "type": "DOCUMENT",
+        "description": "Hana tercatat pernah meminjam kamera dua hari sebelum kejadian.",
+        "clue": "Hana berkaitan dengan peralatan kamera, tetapi catatan ini tidak menunjukkan keberadaannya malam itu.",
+        "relevance": "red-herring",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-029",
+        "title": "Jejak Sepatu",
+        "type": "FORENSIC",
+        "description": "Jejak di dekat rak kamera memiliki pola sol yang sama dengan sepatu kerja teknisi fasilitas.",
+        "clue": "Jejak paling konsisten dengan sepatu kerja yang digunakan teknisi fasilitas.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-013"
+        }
+      },
+      {
+        "id": "evidence-030",
+        "title": "CCTV Parkir",
+        "type": "CCTV",
+        "description": "Kendaraan Reno meninggalkan area kampus pada pukul 00.03, sekitar lima belas menit setelah sensor gudang berhenti mendeteksi aktivitas.",
+        "clue": "Reno berada di area kampus pada rentang waktu yang berdekatan dengan kejadian dan meninggalkan lokasi setelahnya.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-014"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-013",
+        "prompt": "Apa hubungan waktu panel listrik dengan sensor gerak?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Kamera mati sebelum aktivitas gudang terdeteksi."
+          },
+          {
+            "id": "b",
+            "text": "Sensor gerak aktif sebelum panel kehilangan daya."
+          },
+          {
+            "id": "c",
+            "text": "Keduanya terjadi pada waktu yang sama."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-025",
+          "evidence-026"
+        ],
+        "explanation": "Panel mencatat kamera mati pukul 23.42, sedangkan sensor aktif pukul 23.48.",
+        "unlocks": [
+          "evidence-029"
+        ]
+      },
+      {
+        "id": "deduction-014",
+        "prompt": "Siapa yang memiliki akses sah terhadap panel dan berada dalam konteks waktu kejadian?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Tio"
+          },
+          {
+            "id": "b",
+            "text": "Hana"
+          },
+          {
+            "id": "c",
+            "text": "Reno"
+          }
+        ],
+        "correctOption": "c",
+        "evidenceRequired": [
+          "evidence-026",
+          "evidence-027",
+          "evidence-029"
+        ],
+        "explanation": "Reno memiliki akses panel dan jadwal pemeriksaan. Jejak sepatu juga konsisten dengan sepatu teknisi fasilitas.",
+        "unlocks": [
+          "evidence-030"
+        ]
+      },
+      {
+        "id": "deduction-015",
+        "prompt": "Siapa yang paling kuat terhubung dengan rangkaian panel, aktivitas gudang, dan keberadaan di lokasi?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Tio Ramadhan"
+          },
+          {
+            "id": "b",
+            "text": "Hana Lestari"
+          },
+          {
+            "id": "c",
+            "text": "Reno Aditya"
+          }
+        ],
+        "correctOption": "c",
+        "evidenceRequired": [
+          "evidence-026",
+          "evidence-029",
+          "evidence-030"
+        ],
+        "explanation": "Reno memiliki akses panel, jejaknya konsisten dengan jejak di gudang, dan kendaraannya meninggalkan area setelah kejadian.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-015",
+      "requiredEvidence": [
+        "evidence-026",
+        "evidence-029",
+        "evidence-030"
+      ],
+      "requiredDeductions": [
+        "deduction-013",
+        "deduction-014",
+        "deduction-015"
+      ],
+      "explanation": "Rangkaian bukti menunjukkan bahwa orang yang memiliki akses panel, jejak yang sesuai, dan keberadaan yang konsisten dengan waktu kejadian adalah Reno."
+    }
+  },
+  {
+    "id": "case-006",
+    "codename": "UNKNOWN FRAME",
+    "title": "Foto Tanpa Nama",
+    "category": "Investigasi Digital",
+    "difficulty": "hard",
+    "location": "Studio Dokumentasi",
+    "estimatedTime": 9,
+    "description": "Sebuah foto anonim memperlihatkan dokumen internal dan tidak memiliki nama pembuat yang jelas.",
+    "briefing": "Foto ditemukan di komputer studio. Investigator harus membedakan antara orang yang membuat foto, orang yang memindahkan file, dan orang yang membuka file. Jangan menyamakan aktivitas tersebut tanpa evidence.",
+    "suspects": [
+      {
+        "id": "suspect-016",
+        "name": "Vina Kartika",
+        "occupation": "Fotografer",
+        "description": "Menggunakan kamera studio dan berada di lokasi pada waktu foto dibuat.",
+        "traits": [
+          "Menguasai kamera",
+          "Berada di studio saat kejadian"
+        ]
+      },
+      {
+        "id": "suspect-017",
+        "name": "Rehan Fadli",
+        "occupation": "Editor Foto",
+        "description": "Mengelola komputer editing dan menerima file dari kamera studio.",
+        "traits": [
+          "Menguasai komputer editor",
+          "Membuka file foto"
+        ]
+      },
+      {
+        "id": "suspect-018",
+        "name": "Sari Permata",
+        "occupation": "Koordinator Dokumentasi",
+        "description": "Mengatur jadwal studio dan distribusi hasil dokumentasi.",
+        "traits": [
+          "Memiliki akses studio",
+          "Mengatur alur dokumentasi"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-031",
+        "title": "Metadata Foto",
+        "type": "DIGITAL",
+        "description": "Metadata file menunjukkan foto dibuat pada pukul 20.17.",
+        "clue": "Waktu pembuatan foto tercatat pada pukul 20.17.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-032",
+        "title": "Folder Kamera",
+        "type": "DIGITAL",
+        "description": "File asli ditemukan dalam struktur folder kamera yang digunakan oleh Vina.",
+        "clue": "File asli berasal dari kamera yang digunakan Vina.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-033",
+        "title": "Jadwal Studio",
+        "type": "DOCUMENT",
+        "description": "Jadwal menunjukkan Vina berada di studio dari pukul 20.00 sampai 21.00.",
+        "clue": "Vina berada di studio pada rentang waktu yang mencakup pembuatan foto.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-034",
+        "title": "Riwayat Aplikasi Editor",
+        "type": "DIGITAL",
+        "description": "Komputer editor mencatat file foto dibuka melalui aplikasi editing oleh Rehan.",
+        "clue": "Rehan membuka file setelah file berada di komputer editor.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-035",
+        "title": "Riwayat Transfer",
+        "type": "DIGITAL",
+        "description": "File dipindahkan dari media kamera ke komputer editor sebelum dibuka.",
+        "clue": "File berpindah dari kamera ke komputer editor sebelum Rehan membukanya.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-016"
+        }
+      },
+      {
+        "id": "evidence-036",
+        "title": "Urutan Aktivitas File",
+        "type": "DIGITAL",
+        "description": "Urutan aktivitas menunjukkan file dibuat pada 20.17, dipindahkan setelahnya, lalu dibuka di komputer editor.",
+        "clue": "Urutan waktu memisahkan pembuat foto dari orang yang membuka file.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-017"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-016",
+        "prompt": "Apa kesimpulan yang paling tepat dari metadata dan folder kamera?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Foto berasal dari kamera yang digunakan Vina."
+          },
+          {
+            "id": "b",
+            "text": "Rehan pasti mengambil foto tersebut."
+          },
+          {
+            "id": "c",
+            "text": "Sari membuat foto pada komputer editor."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-031",
+          "evidence-032",
+          "evidence-033"
+        ],
+        "explanation": "Metadata dan folder kamera menghubungkan file asli dengan kamera yang digunakan Vina.",
+        "unlocks": [
+          "evidence-035"
+        ]
+      },
+      {
+        "id": "deduction-017",
+        "prompt": "Mengapa Rehan tidak otomatis dapat dianggap sebagai pembuat foto?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Karena Rehan tidak pernah membuka file."
+          },
+          {
+            "id": "b",
+            "text": "Karena membuka file terjadi setelah file dipindahkan dari kamera."
+          },
+          {
+            "id": "c",
+            "text": "Karena metadata tidak pernah menyimpan waktu."
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-032",
+          "evidence-034",
+          "evidence-035"
+        ],
+        "explanation": "Riwayat transfer menunjukkan file sudah ada sebelum Rehan membukanya.",
+        "unlocks": [
+          "evidence-036"
+        ]
+      },
+      {
+        "id": "deduction-018",
+        "prompt": "Siapa yang paling kuat terhubung sebagai pembuat foto berdasarkan seluruh urutan aktivitas?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Vina Kartika"
+          },
+          {
+            "id": "b",
+            "text": "Rehan Fadli"
+          },
+          {
+            "id": "c",
+            "text": "Sari Permata"
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-031",
+          "evidence-032",
+          "evidence-036"
+        ],
+        "explanation": "Foto dibuat pada kamera yang digunakan Vina. Rehan baru membuka file setelah proses transfer.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-016",
+      "requiredEvidence": [
+        "evidence-031",
+        "evidence-032",
+        "evidence-035",
+        "evidence-036"
+      ],
+      "requiredDeductions": [
+        "deduction-016",
+        "deduction-017",
+        "deduction-018"
+      ],
+      "explanation": "Evidence membedakan tiga aktivitas: foto dibuat pada kamera Vina, file dipindahkan, lalu dibuka oleh Rehan. Pembuat foto paling kuat adalah Vina."
+    }
+  },
+  {
+    "id": "case-007",
+    "codename": "LEAKED BLUEPRINT",
+    "title": "Proyek yang Bocor",
+    "category": "Investigasi Internal",
+    "difficulty": "hard",
+    "location": "Laboratorium Riset",
+    "estimatedTime": 10,
+    "description": "Dokumen rancangan proyek penelitian internal muncul di luar lingkungan kampus setelah beberapa orang mengaksesnya.",
+    "briefing": "Tiga orang terakhir mengakses dokumen. Investigator harus mengikuti urutan akses, download, perangkat, dan komunikasi keluar untuk menemukan hubungan terkuat dengan kebocoran.",
+    "suspects": [
+      {
+        "id": "suspect-019",
+        "name": "Kevin Mahendra",
+        "occupation": "Peneliti Utama",
+        "description": "Memimpin proyek dan mempunyai akses penuh ke dokumen penelitian.",
+        "traits": [
+          "Akses penuh",
+          "Mengakses dokumen lebih awal"
+        ]
+      },
+      {
+        "id": "suspect-020",
+        "name": "Nadia Safitri",
+        "occupation": "Asisten Penelitian",
+        "description": "Membantu pengolahan data dan membutuhkan akses dokumen untuk pekerjaannya.",
+        "traits": [
+          "Akses penelitian",
+          "Mengakses dokumen pada pagi hari"
+        ]
+      },
+      {
+        "id": "suspect-021",
+        "name": "Rafi Hidayat",
+        "occupation": "Administrator Dokumen",
+        "description": "Mengatur izin dokumen dan perangkat yang digunakan untuk mengakses penyimpanan proyek.",
+        "traits": [
+          "Mengelola dokumen",
+          "Memiliki perangkat terdaftar"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-037",
+        "title": "Access Log Kevin",
+        "type": "DIGITAL",
+        "description": "Kevin mengakses dokumen pada pukul 09.10.",
+        "clue": "Kevin termasuk pengguna yang mengakses dokumen sebelum kebocoran.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-038",
+        "title": "Access Log Nadia",
+        "type": "DIGITAL",
+        "description": "Nadia mengakses dokumen pada pukul 10.34.",
+        "clue": "Nadia mengakses dokumen sebelum aktivitas download tercatat.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-039",
+        "title": "Access Log Rafi",
+        "type": "DIGITAL",
+        "description": "Rafi mengakses dokumen pada pukul 11.02.",
+        "clue": "Rafi merupakan pengguna terakhir yang mengakses dokumen sebelum download.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-040",
+        "title": "Download Log",
+        "type": "DIGITAL",
+        "description": "Dokumen diunduh pada pukul 11.05, tiga menit setelah akses Rafi.",
+        "clue": "Download terjadi sangat dekat dengan akses Rafi.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-041",
+        "title": "Device Record",
+        "type": "DIGITAL",
+        "description": "Download dilakukan menggunakan perangkat yang terdaftar atas nama Rafi.",
+        "clue": "Perangkat yang melakukan download terdaftar atas Rafi.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-019"
+        }
+      },
+      {
+        "id": "evidence-042",
+        "title": "Email Keluar",
+        "type": "DIGITAL",
+        "description": "Lima menit setelah download, akun Rafi mengirim email ke alamat di luar organisasi.",
+        "clue": "Komunikasi keluar terjadi tidak lama setelah file diunduh oleh perangkat Rafi.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-020"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-019",
+        "prompt": "Siapa yang paling dekat secara waktu dengan aktivitas download?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Kevin"
+          },
+          {
+            "id": "b",
+            "text": "Nadia"
+          },
+          {
+            "id": "c",
+            "text": "Rafi"
+          }
+        ],
+        "correctOption": "c",
+        "evidenceRequired": [
+          "evidence-037",
+          "evidence-038",
+          "evidence-039",
+          "evidence-040"
+        ],
+        "explanation": "Rafi mengakses dokumen pukul 11.02 dan download terjadi pukul 11.05.",
+        "unlocks": [
+          "evidence-041"
+        ]
+      },
+      {
+        "id": "deduction-020",
+        "prompt": "Apa arti Device Record terhadap investigasi?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Download dilakukan dari perangkat yang terdaftar atas Rafi."
+          },
+          {
+            "id": "b",
+            "text": "Kevin mengirim email dari perangkat Rafi."
+          },
+          {
+            "id": "c",
+            "text": "Perangkat tidak dapat dikaitkan dengan aktivitas download."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-040",
+          "evidence-041"
+        ],
+        "explanation": "Device Record memberikan hubungan langsung antara aktivitas download dan perangkat yang terdaftar atas Rafi.",
+        "unlocks": [
+          "evidence-042"
+        ]
+      },
+      {
+        "id": "deduction-021",
+        "prompt": "Siapa yang paling kuat terhubung dengan kebocoran setelah download dan komunikasi keluar diperiksa?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Kevin Mahendra"
+          },
+          {
+            "id": "b",
+            "text": "Nadia Safitri"
+          },
+          {
+            "id": "c",
+            "text": "Rafi Hidayat"
+          }
+        ],
+        "correctOption": "c",
+        "evidenceRequired": [
+          "evidence-040",
+          "evidence-041",
+          "evidence-042"
+        ],
+        "explanation": "Download berasal dari perangkat Rafi dan diikuti email keluar dari akun Rafi dalam waktu lima menit.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-021",
+      "requiredEvidence": [
+        "evidence-039",
+        "evidence-040",
+        "evidence-041",
+        "evidence-042"
+      ],
+      "requiredDeductions": [
+        "deduction-019",
+        "deduction-020",
+        "deduction-021"
+      ],
+      "explanation": "Rafi merupakan hubungan terkuat karena menjadi pengguna terakhir sebelum download, perangkatnya melakukan download, dan akun yang sama mengirim email keluar setelahnya."
+    }
+  },
+  {
+    "id": "case-008",
+    "codename": "LOCKER 214",
+    "title": "Kunci Loker 214",
+    "category": "Investigasi Fisik",
+    "difficulty": "hard",
+    "location": "Gedung Olahraga",
+    "estimatedTime": 10,
+    "description": "Barang pribadi hilang dari Loker 214 tanpa kerusakan pada kunci atau pintu loker.",
+    "briefing": "Kunci cadangan tercatat dipinjam secara resmi. Jangan menganggap pemegang kunci otomatis sebagai pelaku. Periksa siapa yang mengetahui jadwal pemeriksaan dan mempunyai kesempatan memanfaatkan akses tersebut.",
+    "suspects": [
+      {
+        "id": "suspect-022",
+        "name": "Faris Hakim",
+        "occupation": "Pengelola Fasilitas",
+        "description": "Mengelola kunci cadangan dan melakukan pemeriksaan fasilitas.",
+        "traits": [
+          "Memegang kunci cadangan",
+          "Melakukan pemeriksaan fasilitas"
+        ]
+      },
+      {
+        "id": "suspect-023",
+        "name": "Intan Wulandari",
+        "occupation": "Petugas Administrasi",
+        "description": "Mengatur administrasi pemeriksaan dan mengetahui jadwal pembukaan loker.",
+        "traits": [
+          "Mengatur jadwal",
+          "Mengetahui tujuan pemeriksaan"
+        ]
+      },
+      {
+        "id": "suspect-024",
+        "name": "Galang Prakoso",
+        "occupation": "Pelatih Klub",
+        "description": "Bekerja di gedung olahraga tetapi tidak memiliki kunci cadangan.",
+        "traits": [
+          "Berada di gedung olahraga",
+          "Tidak memiliki kunci cadangan"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-043",
+        "title": "Log Kunci Cadangan",
+        "type": "ACCESS_LOG",
+        "description": "Kunci cadangan Loker 214 dipinjam pukul 17.40 oleh Faris.",
+        "clue": "Faris menjadi orang yang secara resmi membawa kunci cadangan.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-044",
+        "title": "Buku Peminjaman",
+        "type": "DOCUMENT",
+        "description": "Nama Faris tercatat sebagai peminjam kunci untuk pemeriksaan fasilitas.",
+        "clue": "Peminjaman kunci Faris mempunyai alasan resmi.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-045",
+        "title": "CCTV Lorong",
+        "type": "CCTV",
+        "description": "Faris terlihat menuju area loker pukul 17.48.",
+        "clue": "Faris memang berada di dekat Loker 214 setelah mengambil kunci.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-046",
+        "title": "Jadwal Klub",
+        "type": "DOCUMENT",
+        "description": "Jadwal menunjukkan Galang sedang melatih di lapangan utama selama rentang waktu kejadian.",
+        "clue": "Galang berada di lokasi gedung, tetapi aktivitasnya tercatat di lapangan utama.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "always"
+        }
+      },
+      {
+        "id": "evidence-047",
+        "title": "Pesan Administrasi",
+        "type": "DIGITAL",
+        "description": "Intan mengirim pesan kepada Faris agar Loker 214 dibuka untuk pemeriksaan fasilitas pada pukul 17.50.",
+        "clue": "Intan mengetahui kapan loker akan dibuka dan memberikan instruksi pemeriksaan.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-022"
+        }
+      },
+      {
+        "id": "evidence-048",
+        "title": "CCTV Ruang Fasilitas",
+        "type": "CCTV",
+        "description": "Faris kembali ke ruang fasilitas pukul 18.02. Rekaman menunjukkan ia membawa perlengkapan pemeriksaan dan tidak membawa barang pribadi dari loker.",
+        "clue": "Faris menjalankan pemeriksaan lalu kembali dengan perlengkapan kerja, sementara evidence lain perlu menentukan siapa yang memanfaatkan kesempatan tersebut.",
+        "relevance": "supporting",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-022"
+        }
+      },
+      {
+        "id": "evidence-049",
+        "title": "Catatan Pemeriksaan",
+        "type": "DOCUMENT",
+        "description": "Catatan pemeriksaan yang dibuat setelah pembukaan loker mencantumkan bahwa Intan hadir untuk memeriksa hasil pemeriksaan sebelum barang dikembalikan.",
+        "clue": "Intan mempunyai kesempatan berada di sekitar loker setelah Faris membukanya dan sebelum pemeriksaan ditutup.",
+        "relevance": "critical",
+        "unlockCondition": {
+          "type": "deduction-completed",
+          "deductionId": "deduction-023"
+        }
+      }
+    ],
+    "deductions": [
+      {
+        "id": "deduction-022",
+        "prompt": "Apa yang dapat disimpulkan dari kunci cadangan dan CCTV?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Faris memiliki kesempatan membuka loker secara resmi."
+          },
+          {
+            "id": "b",
+            "text": "Galang memiliki kunci cadangan."
+          },
+          {
+            "id": "c",
+            "text": "Intan membuka loker menggunakan kunci Faris."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-043",
+          "evidence-044",
+          "evidence-045"
+        ],
+        "explanation": "Faris memang membawa kunci cadangan dan terlihat menuju area loker, tetapi evidence ini belum membuktikan pencurian.",
+        "unlocks": [
+          "evidence-047",
+          "evidence-048"
+        ]
+      },
+      {
+        "id": "deduction-023",
+        "prompt": "Mengapa Faris tidak otomatis dapat dianggap sebagai pelaku hanya karena memegang kunci?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Karena kunci tidak pernah digunakan."
+          },
+          {
+            "id": "b",
+            "text": "Karena peminjaman dan pembukaan loker merupakan bagian dari pemeriksaan resmi."
+          },
+          {
+            "id": "c",
+            "text": "Karena Galang pasti mengambil barang tersebut."
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-043",
+          "evidence-047",
+          "evidence-048"
+        ],
+        "explanation": "Faris memiliki akses yang sah dan menjalankan pemeriksaan. Akses sah harus dibedakan dari bukti pencurian.",
+        "unlocks": [
+          "evidence-049"
+        ]
+      },
+      {
+        "id": "deduction-024",
+        "prompt": "Siapa yang paling kuat terhubung dengan kesempatan tambahan setelah loker dibuka?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Faris Hakim"
+          },
+          {
+            "id": "b",
+            "text": "Intan Wulandari"
+          },
+          {
+            "id": "c",
+            "text": "Galang Prakoso"
+          }
+        ],
+        "correctOption": "b",
+        "evidenceRequired": [
+          "evidence-047",
+          "evidence-048",
+          "evidence-049"
+        ],
+        "explanation": "Intan mengetahui waktu pembukaan, meminta pemeriksaan dilakukan, dan tercatat hadir untuk memeriksa hasil setelah loker dibuka.",
+        "unlocks": []
+      }
+    ],
+    "solution": {
+      "suspectId": "suspect-023",
+      "requiredEvidence": [
+        "evidence-047",
+        "evidence-048",
+        "evidence-049"
+      ],
+      "requiredDeductions": [
+        "deduction-022",
+        "deduction-023",
+        "deduction-024"
+      ],
+      "explanation": "Faris memiliki akses sah dan menjalankan pemeriksaan. Intan mengetahui waktu pembukaan, mengatur pemeriksaan, dan mempunyai kesempatan tambahan setelah loker dibuka."
+    }
+  }
+]
