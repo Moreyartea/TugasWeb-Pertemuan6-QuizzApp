@@ -1,6 +1,47 @@
 import { getAppState } from '../../app/app-state.js'
 import { navigate } from '../../app/router.js'
 
+let investigationTimerInterval = null
+
+function applyInvestigationThemeStyles() {
+  const isLight = document.documentElement.dataset.theme === 'light'
+
+  const timer = document.querySelector('.investigation-timer')
+  if (timer) {
+    timer.style.background = isLight
+      ? 'rgba(245, 240, 228, 0.85)'
+      : 'rgba(18, 21, 26, 0.55)'
+    timer.style.border = isLight
+      ? '1px solid rgba(122, 87, 33, 0.4)'
+      : '1px solid rgba(201, 151, 74, 0.4)'
+    timer.style.boxShadow = isLight
+      ? '0 8px 28px rgba(65, 58, 45, 0.15)'
+      : '0 8px 28px rgba(0, 0, 0, 0.22)'
+  }
+
+  const overlay = document.querySelector('.investigation-start-overlay')
+  if (overlay) {
+    overlay.style.background = isLight
+      ? 'rgba(36, 31, 20, 0.35)'
+      : 'rgba(5, 6, 8, 0.7)'
+  }
+
+  const modal = document.querySelector('.investigation-start-modal')
+  if (modal) {
+    modal.style.background = isLight
+      ? 'rgba(245, 240, 228, 0.98)'
+      : 'rgba(18, 21, 26, 0.96)'
+    modal.style.border = isLight
+      ? '1px solid rgba(122, 87, 33, 0.45)'
+      : '1px solid rgba(201, 151, 74, 0.45)'
+    modal.style.boxShadow = isLight
+      ? '0 24px 80px rgba(65, 58, 45, 0.22)'
+      : '0 24px 80px rgba(0, 0, 0, 0.45)'
+  }
+}
+
+document.addEventListener('casefile-theme-change', applyInvestigationThemeStyles)
+
 export function renderBriefing(container) {
   const {
     currentCase,
@@ -11,6 +52,8 @@ export function renderBriefing(container) {
     navigate('/cases')
     return
   }
+
+  stopInvestigationTimer()
 
   container.replaceChildren()
 
@@ -56,17 +99,24 @@ export function renderBriefing(container) {
   const metadata = document.createElement('section')
   metadata.classList.add('briefing-meta')
 
-  addMetadata(metadata, 'CATEGORY', currentCase.category)
+  addMetadata(
+    metadata,
+    'CATEGORY',
+    currentCase.category
+  )
+
   addMetadata(
     metadata,
     'DIFFICULTY',
     currentCase.difficulty.toUpperCase()
   )
+
   addMetadata(
     metadata,
     'LOCATION',
     currentCase.location
   )
+
   addMetadata(
     metadata,
     'ESTIMATED TIME',
@@ -102,18 +152,11 @@ export function renderBriefing(container) {
   startButton.addEventListener(
     'click',
     () => {
-      try {
-        investigationEngine.beginInvestigation()
-
-        navigate(
-          `/case/${currentCase.id}/investigation`
-        )
-      } catch (error) {
-        showInlineError(
-          page,
-          error.message
-        )
-      }
+      showStartInvestigationPopup(
+        page,
+        currentCase,
+        investigationEngine
+      )
     }
   )
 
@@ -145,6 +188,8 @@ export function renderInvestigation(container) {
   }
 
   const state = investigationEngine.getState()
+
+  stopInvestigationTimer()
 
   container.replaceChildren()
 
@@ -190,6 +235,11 @@ export function renderInvestigation(container) {
   )
 
   page.append(header)
+
+  createFloatingTimer(
+    page,
+    investigationEngine
+  )
 
   const content = document.createElement('div')
   content.classList.add('investigation-content')
@@ -303,10 +353,11 @@ export function renderInvestigation(container) {
   finishSection.classList.add('finish-section')
 
   const finishInfo = document.createElement('p')
-  finishInfo.textContent = getFinishMessage(
-    currentCase,
-    state
-  )
+  finishInfo.textContent =
+    getFinishMessage(
+      currentCase,
+      state
+    )
 
   const finishButton = document.createElement('button')
   finishButton.type = 'button'
@@ -325,6 +376,8 @@ export function renderInvestigation(container) {
     'click',
     () => {
       try {
+        stopInvestigationTimer()
+
         investigationEngine.finishCase()
 
         navigate(
@@ -349,6 +402,10 @@ export function renderInvestigation(container) {
   page.append(content)
 
   container.append(page)
+
+  startInvestigationTimer(
+    investigationEngine
+  )
 }
 
 function renderEvidenceCards(
@@ -359,13 +416,18 @@ function renderEvidenceCards(
 ) {
   caseItem.evidence.forEach(
     (evidence) => {
-      const article = document.createElement('article')
-      article.classList.add('evidence-card')
+      const article =
+        document.createElement('article')
 
-      const accessible = canAccessEvidence(
-        evidence,
-        state
+      article.classList.add(
+        'evidence-card'
       )
+
+      const accessible =
+        canAccessEvidence(
+          evidence,
+          state
+        )
 
       const discovered =
         state.discoveredEvidence.includes(
@@ -384,24 +446,42 @@ function renderEvidenceCards(
         )
       }
 
-      const number = document.createElement('span')
-      number.classList.add('evidence-number')
+      const number =
+        document.createElement('span')
+
+      number.classList.add(
+        'evidence-number'
+      )
+
       number.textContent =
-        evidence.id.replace('evidence-', '#')
+        evidence.id.replace(
+          'evidence-',
+          '#'
+        )
 
-      const title = document.createElement('h3')
-      title.textContent = accessible
-        ? evidence.title
-        : 'Evidence Terkunci'
+      const title =
+        document.createElement('h3')
 
-      const type = document.createElement('span')
-      type.classList.add('evidence-type')
+      title.textContent =
+        accessible
+          ? evidence.title
+          : 'Evidence Terkunci'
+
+      const type =
+        document.createElement('span')
+
+      type.classList.add(
+        'evidence-type'
+      )
+
       type.textContent =
         accessible
           ? evidence.type
           : 'LOCKED'
 
-      const description = document.createElement('p')
+      const description =
+        document.createElement('p')
+
       description.textContent =
         accessible
           ? evidence.description
@@ -415,20 +495,32 @@ function renderEvidenceCards(
       )
 
       if (accessible) {
-        const button = document.createElement('button')
+        const button =
+          document.createElement('button')
+
         button.type = 'button'
         button.dataset.evidenceId =
           evidence.id
-        button.classList.add('evidence-button')
 
-        button.textContent = discovered
-          ? 'Evidence Terbuka'
-          : 'Buka Evidence'
+        button.classList.add(
+          'evidence-button'
+        )
+
+        button.textContent =
+          discovered
+            ? 'Evidence Terbuka'
+            : 'Buka Evidence'
 
         if (discovered) {
-          const clue = document.createElement('p')
-          clue.classList.add('evidence-clue')
-          clue.textContent = evidence.clue
+          const clue =
+            document.createElement('p')
+
+          clue.classList.add(
+            'evidence-clue'
+          )
+
+          clue.textContent =
+            evidence.clue
 
           article.append(clue)
         } else {
@@ -453,7 +545,9 @@ function renderEvidenceCards(
 
     if (
       !button ||
-      !event.currentTarget.contains(button)
+      !event.currentTarget.contains(
+        button
+      )
     ) {
       return
     }
@@ -462,14 +556,16 @@ function renderEvidenceCards(
       button.dataset.evidenceId
 
     try {
-      engine.openEvidence(evidenceId)
+      engine.openEvidence(
+        evidenceId
+      )
 
       renderInvestigation(
-        document.querySelector('#app')
+        document.querySelector('#app-content')
       )
     } catch (error) {
       showInlineError(
-        document.querySelector('#app'),
+        document.querySelector('#app-content'),
         error.message
       )
     }
@@ -484,8 +580,12 @@ function renderDeductionCards(
 ) {
   caseItem.deductions.forEach(
     (deduction) => {
-      const article = document.createElement('article')
-      article.classList.add('deduction-card')
+      const article =
+        document.createElement('article')
+
+      article.classList.add(
+        'deduction-card'
+      )
 
       const completed =
         state.completedDeductions.includes(
@@ -510,18 +610,28 @@ function renderDeductionCards(
         )
       }
 
-      const title = document.createElement('h3')
-      title.textContent = deduction.prompt
+      const title =
+        document.createElement('h3')
 
-      const status = document.createElement('span')
-      status.classList.add('deduction-status')
+      title.textContent =
+        deduction.prompt
+
+      const status =
+        document.createElement('span')
+
+      status.classList.add(
+        'deduction-status'
+      )
 
       if (completed) {
-        status.textContent = 'COMPLETED'
+        status.textContent =
+          'COMPLETED'
       } else if (available) {
-        status.textContent = 'AVAILABLE'
+        status.textContent =
+          'AVAILABLE'
       } else {
-        status.textContent = 'LOCKED'
+        status.textContent =
+          'LOCKED'
       }
 
       article.append(
@@ -529,23 +639,37 @@ function renderDeductionCards(
         title
       )
 
-      if (available && !completed) {
-        const button = document.createElement('button')
+      if (
+        available &&
+        !completed
+      ) {
+        const button =
+          document.createElement('button')
+
         button.type = 'button'
         button.dataset.deductionId =
           deduction.id
-        button.classList.add('secondary-button')
-        button.textContent = 'Buat Deduction'
+
+        button.classList.add(
+          'secondary-button'
+        )
+
+        button.textContent =
+          'Buat Deduction'
 
         article.append(button)
       }
 
       if (completed) {
-        const completedText = document.createElement('p')
+        const completedText =
+          document.createElement('p')
+
         completedText.textContent =
           'Deduction telah diselesaikan dengan benar.'
 
-        article.append(completedText)
+        article.append(
+          completedText
+        )
       }
 
       container.append(article)
@@ -565,7 +689,9 @@ function renderDeductionCards(
 
     if (
       !button ||
-      !event.currentTarget.contains(button)
+      !event.currentTarget.contains(
+        button
+      )
     ) {
       return
     }
@@ -579,14 +705,14 @@ function renderDeductionCards(
       )
 
       renderDeductionForm(
-        document.querySelector('#app'),
+        document.querySelector('#app-content'),
         caseItem,
         deductionId,
         engine
       )
     } catch (error) {
       showInlineError(
-        document.querySelector('#app'),
+        document.querySelector('#app-content'),
         error.message
       )
     }
@@ -601,40 +727,59 @@ function renderSuspectCards(
 ) {
   caseItem.suspects.forEach(
     (suspect) => {
-      const button = document.createElement('button')
+      const button =
+        document.createElement('button')
 
       button.type = 'button'
-      button.dataset.suspectId = suspect.id
-      button.classList.add('suspect-card')
+      button.dataset.suspectId =
+        suspect.id
+
+      button.classList.add(
+        'suspect-card'
+      )
 
       if (
-        state.selectedSuspect === suspect.id
+        state.selectedSuspect ===
+        suspect.id
       ) {
         button.classList.add(
           'suspect-selected'
         )
       }
 
-      const name = document.createElement('h3')
-      name.textContent = suspect.name
+      const name =
+        document.createElement('h3')
 
-      const occupation = document.createElement('span')
+      name.textContent =
+        suspect.name
+
+      const occupation =
+        document.createElement('span')
+
       occupation.classList.add(
         'suspect-occupation'
       )
+
       occupation.textContent =
         suspect.occupation
 
-      const description = document.createElement('p')
+      const description =
+        document.createElement('p')
+
       description.textContent =
         suspect.description
 
-      const traits = document.createElement('ul')
+      const traits =
+        document.createElement('ul')
 
       suspect.traits.forEach(
         (trait) => {
-          const item = document.createElement('li')
-          item.textContent = trait
+          const item =
+            document.createElement('li')
+
+          item.textContent =
+            trait
+
           traits.append(item)
         }
       )
@@ -680,7 +825,9 @@ function renderSuspectCards(
 
     if (
       !button ||
-      !event.currentTarget.contains(button)
+      !event.currentTarget.contains(
+        button
+      )
     ) {
       return
     }
@@ -691,11 +838,11 @@ function renderSuspectCards(
       )
 
       renderInvestigation(
-        document.querySelector('#app')
+        document.querySelector('#app-content')
       )
     } catch (error) {
       showInlineError(
-        document.querySelector('#app'),
+        document.querySelector('#app-content'),
         error.message
       )
     }
@@ -710,7 +857,8 @@ function renderDeductionForm(
 ) {
   const deduction =
     caseItem.deductions.find(
-      (item) => item.id === deductionId
+      (item) =>
+        item.id === deductionId
     )
 
   if (!deduction) {
@@ -718,38 +866,65 @@ function renderDeductionForm(
     return
   }
 
+  stopInvestigationTimer()
+
   container.replaceChildren()
 
-  const page = document.createElement('main')
-  page.classList.add('deduction-form-page')
+  const page =
+    document.createElement('main')
 
-  const eyebrow = document.createElement('p')
+  page.classList.add(
+    'deduction-form-page'
+  )
+
+  createFloatingTimer(
+    page,
+    engine
+  )
+
+  const eyebrow =
+    document.createElement('p')
+
   eyebrow.classList.add('eyebrow')
   eyebrow.textContent =
     'CASEFILE / DEDUCTION'
 
-  const title = document.createElement('h1')
-  title.textContent = deduction.prompt
+  const title =
+    document.createElement('h1')
 
-  const form = document.createElement('form')
-  form.classList.add('deduction-form')
+  title.textContent =
+    deduction.prompt
+
+  const form =
+    document.createElement('form')
+
+  form.classList.add(
+    'deduction-form'
+  )
 
   deduction.options.forEach(
     (option) => {
-      const label = document.createElement('label')
+      const label =
+        document.createElement('label')
+
       label.classList.add(
         'deduction-option'
       )
 
-      const input = document.createElement('input')
+      const input =
+        document.createElement('input')
 
       input.type = 'radio'
-      input.name = 'deduction-answer'
+      input.name =
+        'deduction-answer'
       input.value = option.id
       input.required = true
 
-      const text = document.createElement('span')
-      text.textContent = option.text
+      const text =
+        document.createElement('span')
+
+      text.textContent =
+        option.text
 
       label.append(
         input,
@@ -760,18 +935,32 @@ function renderDeductionForm(
     }
   )
 
-  const actions = document.createElement('div')
-  actions.classList.add('form-actions')
+  const actions =
+    document.createElement('div')
 
-  const submitButton = document.createElement('button')
+  actions.classList.add(
+    'form-actions'
+  )
+
+  const submitButton =
+    document.createElement('button')
+
   submitButton.type = 'submit'
-  submitButton.classList.add('primary-button')
+  submitButton.classList.add(
+    'primary-button'
+  )
+
   submitButton.textContent =
     'Kirim Kesimpulan'
 
-  const backButton = document.createElement('button')
+  const backButton =
+    document.createElement('button')
+
   backButton.type = 'button'
-  backButton.classList.add('secondary-button')
+  backButton.classList.add(
+    'secondary-button'
+  )
+
   backButton.textContent =
     '← Kembali ke Investigasi'
 
@@ -782,11 +971,11 @@ function renderDeductionForm(
         engine.returnToInvestigation()
 
         renderInvestigation(
-          document.querySelector('#app')
+          document.querySelector('#app-content')
         )
       } catch (error) {
         showInlineError(
-          document.querySelector('#app'),
+          document.querySelector('#app-content'),
           error.message
         )
       }
@@ -821,14 +1010,14 @@ function renderDeductionForm(
           )
 
         renderDeductionFeedback(
-          document.querySelector('#app'),
+          document.querySelector('#app-content'),
           deduction,
           result.correct,
           engine
         )
       } catch (error) {
         showInlineError(
-          document.querySelector('#app'),
+          document.querySelector('#app-content'),
           error.message
         )
       }
@@ -842,6 +1031,8 @@ function renderDeductionForm(
   )
 
   container.append(page)
+
+  startInvestigationTimer(engine)
 }
 
 function renderDeductionFeedback(
@@ -850,14 +1041,25 @@ function renderDeductionFeedback(
   correct,
   engine
 ) {
+  stopInvestigationTimer()
+
   container.replaceChildren()
 
-  const page = document.createElement('main')
+  const page =
+    document.createElement('main')
+
   page.classList.add(
     'deduction-feedback-page'
   )
 
-  const status = document.createElement('span')
+  createFloatingTimer(
+    page,
+    engine
+  )
+
+  const status =
+    document.createElement('span')
+
   status.classList.add(
     correct
       ? 'feedback-correct'
@@ -869,19 +1071,28 @@ function renderDeductionFeedback(
       ? '✓ DEDUCTION BENAR'
       : '✕ DEDUCTION SALAH'
 
-  const title = document.createElement('h1')
+  const title =
+    document.createElement('h1')
+
   title.textContent =
     correct
       ? 'Kesimpulan diterima'
       : 'Kesimpulan belum tepat'
 
-  const explanation = document.createElement('p')
+  const explanation =
+    document.createElement('p')
+
   explanation.textContent =
     deduction.explanation
 
-  const button = document.createElement('button')
+  const button =
+    document.createElement('button')
+
   button.type = 'button'
-  button.classList.add('primary-button')
+  button.classList.add(
+    'primary-button'
+  )
+
   button.textContent =
     'Kembali ke Investigasi'
 
@@ -892,11 +1103,11 @@ function renderDeductionFeedback(
         engine.returnToInvestigation()
 
         renderInvestigation(
-          document.querySelector('#app')
+          document.querySelector('#app-content')
         )
       } catch (error) {
         showInlineError(
-          document.querySelector('#app'),
+          document.querySelector('#app-content'),
           error.message
         )
       }
@@ -911,6 +1122,443 @@ function renderDeductionFeedback(
   )
 
   container.append(page)
+
+  startInvestigationTimer(engine)
+}
+
+function createFloatingTimer(
+  page,
+  engine
+) {
+  const existingTimer =
+    document.querySelector(
+      '.investigation-timer'
+    )
+
+  if (existingTimer) {
+    existingTimer.remove()
+  }
+
+  const timer =
+    document.createElement('div')
+
+  timer.classList.add(
+    'investigation-timer'
+  )
+
+  timer.setAttribute('aria-live', 'polite')
+
+  timer.style.position = 'fixed'
+
+  timer.style.top = '76px'
+
+  timer.style.right = '24px'
+
+  timer.style.zIndex = '900'
+
+  timer.style.minWidth = '112px'
+  timer.style.padding = '9px 14px'
+
+  timer.style.display = 'flex'
+  timer.style.flexDirection = 'column'
+  timer.style.alignItems = 'center'
+  timer.style.justifyContent = 'center'
+
+  timer.style.gap = '2px'
+
+  const isLight = document.documentElement.dataset.theme === 'light'
+
+  timer.style.background =
+    isLight ? 'rgba(245, 240, 228, 0.85)' : 'rgba(18, 21, 26, 0.55)'
+
+  timer.style.border =
+    isLight ? '1px solid rgba(122, 87, 33, 0.4)' : '1px solid rgba(201, 151, 74, 0.4)'
+
+  timer.style.backdropFilter =
+    'blur(8px)'
+
+  timer.style.webkitBackdropFilter =
+    'blur(8px)'
+
+  timer.style.boxShadow =
+    isLight ? '0 8px 28px rgba(65, 58, 45, 0.15)' : '0 8px 28px rgba(0, 0, 0, 0.22)'
+
+  timer.style.pointerEvents =
+    'none'
+
+  timer.style.borderRadius =
+    '0'
+
+  const timerLabel =
+    document.createElement('span')
+
+  timerLabel.textContent =
+    'TIME'
+
+  timerLabel.style.fontSize =
+    '8px'
+
+  timerLabel.style.letterSpacing =
+    '0.2em'
+
+  timerLabel.style.opacity =
+    '0.6'
+
+  const timerValue =
+    document.createElement('strong')
+
+  timerValue.textContent =
+    formatInvestigationTime(
+      engine.getState().startedAt
+    )
+
+  timerValue.style.fontSize =
+    '16px'
+
+  timerValue.style.fontWeight =
+    '600'
+
+  timerValue.style.fontVariantNumeric =
+    'tabular-nums'
+
+  timerValue.style.letterSpacing =
+    '0.08em'
+
+  timer.append(
+    timerLabel,
+    timerValue
+  )
+
+  page.append(timer)
+  applyInvestigationThemeStyles()
+
+  return timer
+}
+
+function startInvestigationTimer(
+  engine
+) {
+  stopInvestigationTimer()
+
+  const timer =
+    document.querySelector(
+      '.investigation-timer'
+    )
+
+  if (!timer) {
+    return
+  }
+
+  const timerValue =
+    timer.querySelector('strong')
+
+  if (!timerValue) {
+    return
+  }
+
+  const updateTimer = () => {
+    if (!timer.isConnected) {
+      stopInvestigationTimer()
+      return
+    }
+
+    const state =
+      engine.getState()
+
+    timerValue.textContent =
+      formatInvestigationTime(
+        state.startedAt
+      )
+  }
+
+  updateTimer()
+
+  investigationTimerInterval =
+    setInterval(
+      updateTimer,
+      1000
+    )
+}
+
+function stopInvestigationTimer() {
+  if (investigationTimerInterval) {
+    clearInterval(
+      investigationTimerInterval
+    )
+
+    investigationTimerInterval =
+      null
+  }
+}
+
+function formatInvestigationTime(
+  startedAt
+) {
+  if (!startedAt) {
+    return '00:00'
+  }
+
+  const elapsedSeconds =
+    Math.max(
+      0,
+      Math.floor(
+        (
+          Date.now() -
+          startedAt
+        ) / 1000
+      )
+    )
+
+  const minutes =
+    Math.floor(
+      elapsedSeconds / 60
+    )
+
+  const seconds =
+    elapsedSeconds % 60
+
+  return `${String(minutes).padStart(
+    2,
+    '0'
+  )}:${String(seconds).padStart(
+    2,
+    '0'
+  )}`
+}
+
+function showStartInvestigationPopup(
+  page,
+  caseItem,
+  engine
+) {
+  const overlay =
+    document.createElement('div')
+
+  overlay.classList.add(
+    'investigation-start-overlay'
+  )
+
+  overlay.style.position = 'fixed'
+  overlay.style.inset = '0'
+  overlay.style.zIndex = '9999'
+  overlay.style.display = 'flex'
+  overlay.style.alignItems = 'center'
+  overlay.style.justifyContent = 'center'
+  overlay.style.padding = '24px'
+
+  const isLight = document.documentElement.dataset.theme === 'light'
+
+  overlay.style.background =
+    isLight ? 'rgba(36, 31, 20, 0.35)' : 'rgba(5, 6, 8, 0.7)'
+
+  overlay.style.backdropFilter =
+    'blur(5px)'
+
+  overlay.style.webkitBackdropFilter =
+    'blur(5px)'
+
+  const modal =
+    document.createElement('section')
+
+  modal.classList.add(
+    'investigation-start-modal'
+  )
+
+  modal.style.width =
+    'min(480px, 100%)'
+
+  modal.style.padding =
+    '32px'
+
+  modal.style.background =
+    isLight ? 'rgba(245, 240, 228, 0.98)' : 'rgba(18, 21, 26, 0.96)'
+
+  modal.style.border =
+    isLight ? '1px solid rgba(122, 87, 33, 0.45)' : '1px solid rgba(201, 151, 74, 0.45)'
+
+  modal.style.boxShadow =
+    isLight ? '0 24px 80px rgba(65, 58, 45, 0.22)' : '0 24px 80px rgba(0, 0, 0, 0.45)'
+
+  const eyebrow =
+    document.createElement('p')
+
+  eyebrow.classList.add('eyebrow')
+
+  eyebrow.textContent =
+    'CASEFILE / CONFIRMATION'
+
+  const title =
+    document.createElement('h2')
+
+  title.textContent =
+    'Mulai Investigasi?'
+
+  const description =
+    document.createElement('p')
+
+  description.textContent =
+    `Anda akan memulai investigasi ${caseItem.codename}. Setelah dikonfirmasi, countdown 3 detik akan dimulai.`
+
+  const warning =
+    document.createElement('p')
+
+  warning.textContent =
+    'Timer investigasi belum berjalan pada tahap ini.'
+
+  warning.style.opacity =
+    '0.7'
+
+  warning.style.fontSize =
+    '13px'
+
+  const actions =
+    document.createElement('div')
+
+  actions.style.display =
+    'flex'
+
+  actions.style.gap =
+    '10px'
+
+  actions.style.marginTop =
+    '24px'
+
+  actions.style.flexWrap =
+    'wrap'
+
+  const confirmButton =
+    document.createElement('button')
+
+  confirmButton.type =
+    'button'
+
+  confirmButton.classList.add(
+    'primary-button'
+  )
+
+  confirmButton.textContent =
+    'Ya, Mulai'
+
+  const cancelButton =
+    document.createElement('button')
+
+  cancelButton.type =
+    'button'
+
+  cancelButton.classList.add(
+    'secondary-button'
+  )
+
+  cancelButton.textContent =
+    'Kembali'
+
+  cancelButton.addEventListener(
+    'click',
+    () => {
+      overlay.remove()
+    }
+  )
+
+  confirmButton.addEventListener(
+    'click',
+    () => {
+      actions.style.display =
+        'none'
+
+      description.textContent =
+        'Bersiap. Investigasi akan dimulai.'
+
+      warning.textContent =
+        'Timer investigasi belum berjalan.'
+
+      startInvestigationCountdown(
+        overlay,
+        modal,
+        caseItem,
+        engine
+      )
+    }
+  )
+
+  actions.append(
+    confirmButton,
+    cancelButton
+  )
+
+  modal.append(
+    eyebrow,
+    title,
+    description,
+    warning,
+    actions
+  )
+
+  overlay.append(modal)
+
+  overlay.addEventListener(
+    'click',
+    (event) => {
+      if (
+        event.target === overlay
+      ) {
+        overlay.remove()
+      }
+    }
+  )
+
+  page.append(overlay)
+  applyInvestigationThemeStyles()
+
+  confirmButton.focus()
+}
+
+function startInvestigationCountdown(
+  overlay,
+  modal,
+  caseItem,
+  engine
+) {
+  const countdown = document.createElement('div')
+
+  countdown.classList.add('investigation-countdown')
+  countdown.style.marginTop = '24px'
+  countdown.style.textAlign = 'center'
+  countdown.style.fontSize = '72px'
+  countdown.style.fontWeight = '700'
+  countdown.style.lineHeight = '1'
+  countdown.style.letterSpacing = '0.08em'
+
+  modal.append(countdown)
+
+  let count = 3
+  countdown.textContent = String(count)
+
+  const interval = setInterval(() => {
+    count -= 1
+
+    if (count > 0) {
+      countdown.textContent = String(count)
+      return
+    }
+
+    clearInterval(interval)
+    countdown.textContent = 'GO'
+
+    try {
+      engine.beginInvestigation()
+
+      requestAnimationFrame(() => {
+        overlay.remove()
+        navigate(`/case/${caseItem.id}/investigation`)
+      })
+    } catch (error) {
+      overlay.remove()
+      showInlineError(
+        document.querySelector('#app-content'),
+        error.message
+      )
+    }
+  }, 1000)
 }
 
 function canAccessEvidence(
@@ -924,7 +1572,9 @@ function canAccessEvidence(
     return true
   }
 
-  if (condition.type === 'always') {
+  if (
+    condition.type === 'always'
+  ) {
     return true
   }
 
@@ -1007,14 +1657,22 @@ function addMetadata(
   label,
   value
 ) {
-  const item = document.createElement('div')
+  const item =
+    document.createElement('div')
+
   item.classList.add('meta-item')
 
-  const labelElement = document.createElement('span')
-  labelElement.textContent = label
+  const labelElement =
+    document.createElement('span')
 
-  const valueElement = document.createElement('strong')
-  valueElement.textContent = value
+  labelElement.textContent =
+    label
+
+  const valueElement =
+    document.createElement('strong')
+
+  valueElement.textContent =
+    value
 
   item.append(
     labelElement,
@@ -1037,14 +1695,24 @@ function showInlineError(
     oldError.remove()
   }
 
-  const error = document.createElement('div')
-  error.classList.add('inline-error')
+  const error =
+    document.createElement('div')
 
-  const title = document.createElement('strong')
-  title.textContent = 'Terjadi kesalahan'
+  error.classList.add(
+    'inline-error'
+  )
 
-  const description = document.createElement('p')
-  description.textContent = message
+  const title =
+    document.createElement('strong')
+
+  title.textContent =
+    'Terjadi kesalahan'
+
+  const description =
+    document.createElement('p')
+
+  description.textContent =
+    message
 
   error.append(
     title,

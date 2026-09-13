@@ -70,12 +70,23 @@ export function createInvestigationEngine(
             )
         }
 
+        /*
+         * Penting:
+         * Waktu BELUM dimulai ketika
+         * user baru membuka briefing.
+         *
+         * startedAt sengaja dibuat null.
+         * Waktu baru dimulai ketika
+         * beginInvestigation() dipanggil
+         * setelah countdown selesai.
+         */
         return updateState({
             ...createInitialState(),
             caseId: caseItem.id,
             phase:
                 INVESTIGATION_PHASES.BRIEFING,
-            startedAt: Date.now()
+            startedAt: null,
+            finishedAt: null
         })
     }
 
@@ -105,9 +116,28 @@ export function createInvestigationEngine(
     }
 
     function beginInvestigation() {
-        return transitionTo(
-            INVESTIGATION_PHASES.INVESTIGATION
-        )
+        if (
+            state.phase !==
+            INVESTIGATION_PHASES.BRIEFING
+        ) {
+            throw new Error(
+                'Investigasi belum berada pada tahap briefing.'
+            )
+        }
+
+        /*
+         * TITIK NOL WAKTU INVESTIGASI.
+         *
+         * startedAt baru dibuat setelah
+         * countdown 3 → 2 → 1 → GO selesai.
+         */
+        return updateState({
+            ...state,
+            phase:
+                INVESTIGATION_PHASES.INVESTIGATION,
+            startedAt: Date.now(),
+            finishedAt: null
+        })
     }
 
     function openEvidence(evidenceId) {

@@ -10,5 +10,10 @@ import {
     initializeRouter
 } from './app/router.js'
 
+import {
+    applyTheme
+} from './features/settings/theme.service.js'
+
+applyTheme()
 bootstrap()
 initializeRouter()

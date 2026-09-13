@@ -29,9 +29,7 @@ export function getHistoryRecords() {
     createEmptyHistory()
   )
 
-  if (!isValidHistory(data)) {
-    return []
-  }
+  if (!isValidHistory(data)) return []
 
   return data.records
 }
@@ -43,26 +41,34 @@ export function saveHistoryRecord(record) {
     (item) => item.id === record.id
   )
 
-  if (alreadyExists) {
-    return record
-  }
+  if (alreadyExists) return record
 
   const nextData = {
     version: HISTORY_VERSION,
-    records: [
-      record,
-      ...currentRecords
-    ].slice(0, 50)
+    records: [record, ...currentRecords].slice(0, 50)
   }
 
-  writeJson(
-    STORAGE_KEYS.HISTORY,
-    nextData
-  )
+  writeJson(STORAGE_KEYS.HISTORY, nextData)
 
   return record
 }
 
+export function getHighScore() {
+  const value = readJson(STORAGE_KEYS.HIGH_SCORE, 0)
+  return Number.isFinite(Number(value)) ? Number(value) : 0
+}
+
+export function saveHighScore(score) {
+  const numericScore = Math.max(0, Math.min(100, Number(score) || 0))
+  const currentBest = getHighScore()
+  const bestScore = Math.max(currentBest, numericScore)
+
+  writeJson(STORAGE_KEYS.HIGH_SCORE, bestScore)
+
+  return bestScore
+}
+
 export function clearHistoryRecords() {
   removeItem(STORAGE_KEYS.HISTORY)
+  removeItem(STORAGE_KEYS.HIGH_SCORE)
 }

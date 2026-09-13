@@ -1,175 +1,173 @@
 import { SCORE_RULES, getRank } from './scoring.rules.js'
 
 export function calculateEvidenceScore(caseItem, discoveredEvidence) {
-  return discoveredEvidence.reduce((total, evidenceId) => {
-    const evidence = caseItem.evidence.find(
-      (item) => item.id === evidenceId
-    )
+    const discovered = new Set(discoveredEvidence)
 
-    if (!evidence) return total
+    const rawScore = caseItem.evidence.reduce((total, evidence) => {
+        if (!discovered.has(evidence.id)) return total
+        return total + (SCORE_RULES.EVIDENCE_DISCOVERY[evidence.relevance] ?? 0)
+    }, 0)
 
-    return (
-      total +
-      (SCORE_RULES.EVIDENCE_DISCOVERY[evidence.relevance] ?? 0)
+    const maxRawScore = caseItem.evidence.reduce((total, evidence) => {
+        return total + (SCORE_RULES.EVIDENCE_DISCOVERY[evidence.relevance] ?? 0)
+    }, 0)
+
+    if (maxRawScore <= 0) return 0
+
+    return Math.min(
+        SCORE_RULES.EVIDENCE_MAX,
+        Math.round((rawScore / maxRawScore) * SCORE_RULES.EVIDENCE_MAX)
     )
-  }, 0)
 }
 
 export function calculateDeductionScore(caseItem, decisions) {
-  return decisions.reduce((total, decision) => {
-    if (!caseItem.deductions.some((item) => item.id === decision.deductionId)) {
-      return total
-    }
-
-    return (
-      total +
-      (decision.correct
-        ? SCORE_RULES.DEDUCTION_CORRECT
-        : SCORE_RULES.DEDUCTION_WRONG)
+    const deductionDecisions = decisions.filter(
+        (decision) => decision.type === 'DEDUCTION'
     )
-  }, 0)
+
+    if (caseItem.deductions.length === 0) return 0
+
+    const correctAttempts = deductionDecisions.filter(
+        (decision) => decision.correct
+    ).length
+
+    if (deductionDecisions.length === 0) return 0
+
+    const accuracy = correctAttempts / deductionDecisions.length
+
+    return Math.min(
+        SCORE_RULES.DEDUCTION_MAX,
+        Math.round(accuracy * SCORE_RULES.DEDUCTION_MAX)
+    )
 }
 
 export function calculateSuspectScore(caseItem, selectedSuspect) {
-  if (!selectedSuspect) return 0
+    if (!selectedSuspect) return SCORE_RULES.SUSPECT_WRONG
 
-  return selectedSuspect === caseItem.solution.suspectId
-    ? SCORE_RULES.SUSPECT_CORRECT
-    : SCORE_RULES.SUSPECT_WRONG
+    return selectedSuspect === caseItem.solution.suspectId
+        ? SCORE_RULES.SUSPECT_CORRECT
+        : SCORE_RULES.SUSPECT_WRONG
 }
 
-export function calculateTimeScore(startedAt, finishedAt) {
-  if (!startedAt || !finishedAt) return 0
+export function calculateTimeScore(startedAt, finishedAt, estimatedTime) {
+    if (!startedAt || !finishedAt || !estimatedTime) return 0
 
-  const elapsedSeconds = Math.max(
-    0,
-    Math.floor((finishedAt - startedAt) / 1000)
-  )
+    const elapsedSeconds = calculateElapsedSeconds(startedAt, finishedAt)
+    const estimatedSeconds = Number(estimatedTime) * 60
 
-  if (elapsedSeconds <= SCORE_RULES.TIME_LIMITS.fast) {
-    return SCORE_RULES.MAX_TIME_SCORE
-  }
+    if (estimatedSeconds <= 0) return 0
 
-  if (elapsedSeconds <= SCORE_RULES.TIME_LIMITS.efficient) {
-    return 7
-  }
+    const ratio = elapsedSeconds / estimatedSeconds
 
-  if (elapsedSeconds <= SCORE_RULES.TIME_LIMITS.normal) {
-    return 4
-  }
+    if (ratio <= SCORE_RULES.TIME_LIMITS.fast) {
+        return SCORE_RULES.TIME_SCORES.fast
+    }
 
-  return 0
+    if (ratio <= SCORE_RULES.TIME_LIMITS.efficient) {
+        return SCORE_RULES.TIME_SCORES.efficient
+    }
+
+    if (ratio <= SCORE_RULES.TIME_LIMITS.normal) {
+        return SCORE_RULES.TIME_SCORES.normal
+    }
+
+    if (ratio <= SCORE_RULES.TIME_LIMITS.slow) {
+        return SCORE_RULES.TIME_SCORES.slow
+    }
+
+    return SCORE_RULES.TIME_SCORES.verySlow
 }
 
 export function calculateElapsedSeconds(startedAt, finishedAt) {
-  if (!startedAt || !finishedAt) return 0
+    if (!startedAt || !finishedAt) return 0
 
-  return Math.max(
-    0,
-    Math.floor((finishedAt - startedAt) / 1000)
-  )
+    return Math.max(
+        0,
+        Math.floor((finishedAt - startedAt) / 1000)
+    )
 }
 
 export function calculateAccuracy(decisions) {
-  if (decisions.length === 0) return 100
+    const deductionDecisions = decisions.filter(
+        (decision) => decision.type === 'DEDUCTION'
+    )
 
-  const correctAnswers = decisions.filter(
-    (decision) => decision.correct
-  ).length
+    if (deductionDecisions.length === 0) return 0
 
-  return Math.round((correctAnswers / decisions.length) * 100)
+    const correctAnswers = deductionDecisions.filter(
+        (decision) => decision.correct
+    ).length
+
+    return Math.round(
+        (correctAnswers / deductionDecisions.length) * 100
+    )
 }
 
 export function calculateScore(caseItem, state) {
-  const evidenceScore = calculateEvidenceScore(
-    caseItem,
-    state.discoveredEvidence
-  )
+    const evidenceScore = calculateEvidenceScore(
+        caseItem,
+        state.discoveredEvidence
+    )
 
-  const deductionScore = calculateDeductionScore(
-    caseItem,
-    state.decisions
-  )
+    const deductionScore = calculateDeductionScore(
+        caseItem,
+        state.decisions
+    )
 
-  const suspectScore = calculateSuspectScore(
-    caseItem,
-    state.selectedSuspect
-  )
+    const suspectScore = calculateSuspectScore(
+        caseItem,
+        state.selectedSuspect
+    )
 
-  const timeScore = calculateTimeScore(
-    state.startedAt,
-    state.finishedAt
-  )
-
-  const rawScore =
-    evidenceScore +
-    deductionScore +
-    suspectScore +
-    timeScore
-
-  const maxEvidenceScore = caseItem.evidence.reduce(
-    (total, evidence) =>
-      total +
-      (SCORE_RULES.EVIDENCE_DISCOVERY[evidence.relevance] ?? 0),
-    0
-  )
-
-  const maxDeductionScore =
-    caseItem.deductions.length * SCORE_RULES.DEDUCTION_CORRECT
-
-  const maxScore =
-    maxEvidenceScore +
-    maxDeductionScore +
-    SCORE_RULES.SUSPECT_CORRECT +
-    SCORE_RULES.MAX_TIME_SCORE
-
-  const normalizedScore =
-    maxScore > 0
-      ? Math.max(
-          0,
-          Math.min(
-            100,
-            Math.round((rawScore / maxScore) * 100)
-          )
-        )
-      : 0
-
-  const suspectCorrect =
-    state.selectedSuspect === caseItem.solution.suspectId
-
-  return {
-    score: normalizedScore,
-    rank: getRank(normalizedScore),
-
-    accuracy: calculateAccuracy(state.decisions),
-
-    evidence: {
-      discovered: state.discoveredEvidence.length,
-      total: caseItem.evidence.length,
-      points: evidenceScore
-    },
-
-    deductions: {
-      completed: state.completedDeductions.length,
-      total: caseItem.deductions.length,
-      points: deductionScore
-    },
-
-    suspect: {
-      selected: state.selectedSuspect,
-      correct: suspectCorrect,
-      points: suspectScore
-    },
-
-    time: {
-      seconds: calculateElapsedSeconds(
+    const timeScore = calculateTimeScore(
         state.startedAt,
-        state.finishedAt
-      ),
-      points: timeScore
-    },
+        state.finishedAt,
+        caseItem.estimatedTime
+    )
 
-    rawScore,
-    maxScore
-  }
+    const score = Math.max(
+        0,
+        Math.min(100, evidenceScore + deductionScore + suspectScore + timeScore)
+    )
+
+    const deductionDecisions = state.decisions.filter(
+        (decision) => decision.type === 'DEDUCTION'
+    )
+
+    const correctDeductions = deductionDecisions.filter(
+        (decision) => decision.correct
+    ).length
+
+    const accuracy = calculateAccuracy(state.decisions)
+
+    return {
+        score,
+        rank: getRank(score),
+        accuracy,
+        evidence: {
+            discovered: state.discoveredEvidence.length,
+            total: caseItem.evidence.length,
+            points: evidenceScore,
+            maxPoints: SCORE_RULES.EVIDENCE_MAX
+        },
+        deductions: {
+            completed: state.completedDeductions.length,
+            total: caseItem.deductions.length,
+            correct: correctDeductions,
+            attempts: deductionDecisions.length,
+            points: deductionScore,
+            maxPoints: SCORE_RULES.DEDUCTION_MAX
+        },
+        suspect: {
+            selected: state.selectedSuspect,
+            correct: state.selectedSuspect === caseItem.solution.suspectId,
+            points: suspectScore,
+            maxPoints: SCORE_RULES.SUSPECT_MAX
+        },
+        time: {
+            seconds: calculateElapsedSeconds(state.startedAt, state.finishedAt),
+            points: timeScore,
+            maxPoints: SCORE_RULES.TIME_MAX
+        }
+    }
 }
