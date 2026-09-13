@@ -62,12 +62,17 @@ export async function renderCaseSelection(
     )
 
     description.textContent =
-        'Pilih satu kasus untuk memulai investigasi. Analisis evidence sebelum menentukan siapa yang paling bertanggung jawab.'
+        'Pilih satu kasus untuk memulai investigasi. Analisis evidence, jawab 5 pertanyaan pilihan ganda, lalu tentukan siapa yang paling bertanggung jawab.'
+
+    const quizMeta = document.createElement('p')
+    quizMeta.classList.add('case-selection-meta')
+    quizMeta.textContent = '8 CASES · 40 QUESTIONS · 5 QUESTIONS EACH'
 
     header.append(
         eyebrow,
         title,
-        description
+        description,
+        quizMeta
     )
 
     const status =
@@ -220,6 +225,10 @@ function renderCaseCards(
                 difficulty,
                 category
             )
+
+            const questionCount = document.createElement('span')
+            questionCount.textContent = `${caseItem.deductions.length} Questions`
+            metadata.append(questionCount)
 
             const location =
                 document.createElement('p')

@@ -37,12 +37,12 @@ export function renderResult(container) {
   eyebrow.textContent = 'CASEFILE / EVALUATION'
 
   const title = document.createElement('h1')
-  title.textContent = 'Case Evaluation'
+  title.textContent = 'Quiz Result'
 
   const description = document.createElement('p')
   description.classList.add('page-description')
   description.textContent =
-    'Investigasi telah selesai. Berikut evaluasi berdasarkan seluruh keputusan yang dibuat.'
+    'Investigasi telah selesai. Berikut hasil quiz berdasarkan seluruh keputusan yang dibuat.'
 
   header.append(eyebrow, title, description)
   page.append(header)

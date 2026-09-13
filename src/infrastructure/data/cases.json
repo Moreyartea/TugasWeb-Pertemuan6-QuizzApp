@@ -190,6 +190,56 @@
         ],
         "explanation": "Akses ruang arsip, aktivitas komputer, dan nama file yang berkaitan dengan ARS-17 membentuk rangkaian bukti yang konsisten terhadap Raka.",
         "unlocks": []
+      },
+      {
+        "prompt": "Apa hubungan terkuat antara aktivitas Raka dan berkas ARS-17 setelah seluruh evidence diperiksa?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Kartu Raka digunakan di arsip dan komputernya mencetak dokumen yang berkaitan dengan ARS-17."
+          },
+          {
+            "id": "b",
+            "text": "Raka hanya tercatat bekerja di laboratorium tanpa hubungan dengan ARS-17."
+          },
+          {
+            "id": "c",
+            "text": "Raka tidak memiliki akses ke ruang arsip pada malam kejadian."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-001",
+          "evidence-006"
+        ],
+        "explanation": "Log akses dan daftar dokumen cetak menghubungkan Raka dengan akses ruang arsip serta aktivitas yang berkaitan langsung dengan ARS-17.",
+        "unlocks": [],
+        "id": "deduction-025"
+      },
+      {
+        "prompt": "Evidence mana yang paling kuat membedakan alasan Dimas dari bukti keterlibatan Raka?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Catatan peminjaman Dimas menunjukkan minat, tetapi tidak menunjukkan akses malam kejadian."
+          },
+          {
+            "id": "b",
+            "text": "CCTV membuktikan Dimas menggunakan kartu Raka."
+          },
+          {
+            "id": "c",
+            "text": "Formulir administrasi membuktikan Dimas mencetak ARS-17."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-003",
+          "evidence-006"
+        ],
+        "explanation": "Catatan Dimas hanya menunjukkan alasan untuk tertarik pada Arsip 17, sedangkan aktivitas Raka memiliki hubungan waktu dan dokumen yang lebih langsung.",
+        "unlocks": [],
+        "id": "deduction-026"
       }
     ],
     "solution": {
@@ -202,7 +252,9 @@
       "requiredDeductions": [
         "deduction-001",
         "deduction-002",
-        "deduction-003"
+        "deduction-003",
+        "deduction-025",
+        "deduction-026"
       ],
       "explanation": "Raka adalah suspect yang paling kuat karena kartu aksesnya digunakan di ruang arsip, komputer miliknya aktif tidak lama kemudian, dan daftar cetak berkaitan langsung dengan ARS-17."
     }
@@ -399,6 +451,56 @@
         ],
         "explanation": "Siska terlihat di terminal yang menjalankan perubahan tepat sebelum waktu perubahan tercatat.",
         "unlocks": []
+      },
+      {
+        "prompt": "Apa hubungan paling kuat antara akses fisik Siska dan perubahan konfigurasi server?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Siska berada di lokasi sebelum perubahan dan terlihat di terminal yang menjalankan perubahan."
+          },
+          {
+            "id": "b",
+            "text": "Arman memiliki kemampuan teknis sehingga pasti berada di ruang server."
+          },
+          {
+            "id": "c",
+            "text": "Fajar pernah meminta perubahan sehingga tercatat melakukan perubahan."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-008",
+          "evidence-012"
+        ],
+        "explanation": "Log pintu dan kamera internal menempatkan Siska di lokasi dan terminal yang sama dengan perubahan konfigurasi.",
+        "unlocks": [],
+        "id": "deduction-027"
+      },
+      {
+        "prompt": "Mengapa permintaan perubahan konfigurasi dari Fajar menjadi petunjuk yang lebih lemah?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Permintaan menunjukkan alasan, tetapi tidak membuktikan Fajar berada di terminal saat perubahan."
+          },
+          {
+            "id": "b",
+            "text": "Permintaan Fajar membuktikan ia memiliki hak administrator penuh."
+          },
+          {
+            "id": "c",
+            "text": "Permintaan Fajar tercatat setelah perubahan sehingga menjadi bukti langsung."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-010",
+          "evidence-012"
+        ],
+        "explanation": "Permintaan Fajar hanya memberikan motif atau konteks, sedangkan evidence fisik dan digital mengarah kepada Siska.",
+        "unlocks": [],
+        "id": "deduction-028"
       }
     ],
     "solution": {
@@ -411,7 +513,9 @@
       "requiredDeductions": [
         "deduction-004",
         "deduction-005",
-        "deduction-006"
+        "deduction-006",
+        "deduction-027",
+        "deduction-028"
       ],
       "explanation": "Siska memiliki akses administratif, sedang bertugas malam, masuk ke ruang server sebelum kejadian, dan terlihat di terminal yang menjalankan perubahan."
     }
@@ -609,6 +713,56 @@
         ],
         "explanation": "Yoga berada di area ruang pamer pada waktu yang sama dengan akses pintu dan membawa tas peralatan ketika keluar.",
         "unlocks": []
+      },
+      {
+        "prompt": "Evidence mana yang paling tepat menjelaskan mengapa angka 18.42 tidak dapat dipakai sebagai waktu hilangnya kamera?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Laporan teknisi dan foto dokumentasi menunjukkan jam sudah berhenti sebelum kamera terlihat dibawa keluar."
+          },
+          {
+            "id": "b",
+            "text": "Jam dinding selalu menunjukkan waktu kejadian secara akurat."
+          },
+          {
+            "id": "c",
+            "text": "CCTV menunjukkan kamera hilang tepat pada pukul 18.42."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-016",
+          "evidence-017"
+        ],
+        "explanation": "Jam sudah bermasalah sebelum kejadian, sehingga angka 18.42 hanya menjadi petunjuk yang menyesatkan.",
+        "unlocks": [],
+        "id": "deduction-029"
+      },
+      {
+        "prompt": "Siapa yang paling kuat berada dalam rentang waktu kejadian setelah kronologi diperiksa?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Yoga Prasetyo, karena berada di area ruang pamer pada rentang yang sama dengan aktivitas pintu dan kejadian."
+          },
+          {
+            "id": "b",
+            "text": "Bima Saputra, karena nama Bima muncul pada daftar staf gedung."
+          },
+          {
+            "id": "c",
+            "text": "Lani Maharani, karena ia mengetahui kondisi jam dinding."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-015",
+          "evidence-018"
+        ],
+        "explanation": "Log pintu dan CCTV area servis sama-sama menempatkan Yoga dalam konteks waktu yang relevan dengan hilangnya kamera.",
+        "unlocks": [],
+        "id": "deduction-030"
       }
     ],
     "solution": {
@@ -621,7 +775,9 @@
       "requiredDeductions": [
         "deduction-007",
         "deduction-008",
-        "deduction-009"
+        "deduction-009",
+        "deduction-029",
+        "deduction-030"
       ],
       "explanation": "Kronologi menunjukkan kamera dibawa keluar sekitar 19.16. Yoga berada di area pada rentang tersebut dan terekam keluar dengan tas peralatan."
     }
@@ -818,6 +974,56 @@
         ],
         "explanation": "Aldi menjalankan proses pengiriman setelah Mira terlihat melakukan aktivitas pada paket.",
         "unlocks": []
+      },
+      {
+        "prompt": "Apa yang paling kuat menunjukkan bahwa pertukaran label terjadi sebelum paket dikirim?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Label lama dilepas di area sortir dan Mira terlihat menangani paket sebelum pengiriman."
+          },
+          {
+            "id": "b",
+            "text": "Aldi membawa paket melalui jalur resmi sehingga ia pasti mengganti label."
+          },
+          {
+            "id": "c",
+            "text": "Reza menerima paket sesuai prosedur sehingga ia mengganti label di awal."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-023",
+          "evidence-024"
+        ],
+        "explanation": "Label lama dan rekaman meja sortir sama-sama menempatkan aktivitas perubahan pada tahap sebelum paket dikirim.",
+        "unlocks": [],
+        "id": "deduction-031"
+      },
+      {
+        "prompt": "Mengapa log pengiriman Aldi tidak cukup untuk menjadikannya pelaku pertukaran label?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Log hanya menunjukkan proses pengiriman berlangsung melalui jalur resmi."
+          },
+          {
+            "id": "b",
+            "text": "Log membuktikan Aldi mengganti label di meja sortir."
+          },
+          {
+            "id": "c",
+            "text": "Log menunjukkan Aldi tidak pernah membawa paket."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-021",
+          "evidence-024"
+        ],
+        "explanation": "Aktivitas Aldi tercatat sesuai jalur resmi, sedangkan rekaman sebelum pengiriman mengarah pada kesempatan Mira.",
+        "unlocks": [],
+        "id": "deduction-032"
       }
     ],
     "solution": {
@@ -830,7 +1036,9 @@
       "requiredDeductions": [
         "deduction-010",
         "deduction-011",
-        "deduction-012"
+        "deduction-012",
+        "deduction-031",
+        "deduction-032"
       ],
       "explanation": "Pertukaran terjadi di area sortir sebelum pengiriman. Mira memiliki kesempatan dan terekam melakukan aktivitas pada paket sebelum Aldi membawanya keluar."
     }
@@ -1028,6 +1236,56 @@
         ],
         "explanation": "Reno memiliki akses panel, jejaknya konsisten dengan jejak di gudang, dan kendaraannya meninggalkan area setelah kejadian.",
         "unlocks": []
+      },
+      {
+        "prompt": "Apa hubungan paling kuat antara panel listrik dan aktivitas di gudang?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Kamera kehilangan daya enam menit sebelum sensor gerak aktif di gudang."
+          },
+          {
+            "id": "b",
+            "text": "Sensor gerak aktif sebelum panel listrik mengalami perubahan."
+          },
+          {
+            "id": "c",
+            "text": "Panel listrik membuktikan Hana berada di gudang saat kejadian."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-025",
+          "evidence-026"
+        ],
+        "explanation": "Urutan waktu menunjukkan kamera kehilangan daya lalu aktivitas gerak terdeteksi enam menit kemudian.",
+        "unlocks": [],
+        "id": "deduction-033"
+      },
+      {
+        "prompt": "Evidence mana yang paling kuat menghubungkan Reno dengan lokasi kejadian?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Jejak sepatu sesuai dengan sepatu kerja teknisi dan CCTV menempatkan Reno di kampus pada waktu yang berdekatan."
+          },
+          {
+            "id": "b",
+            "text": "Hana memiliki hubungan dengan peralatan kamera sehingga pasti berada di gudang."
+          },
+          {
+            "id": "c",
+            "text": "Tio memiliki akses fasilitas sehingga otomatis berada di lokasi."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-029",
+          "evidence-030"
+        ],
+        "explanation": "Jejak fisik dan rekaman lokasi membentuk hubungan yang lebih langsung antara Reno dan kejadian.",
+        "unlocks": [],
+        "id": "deduction-034"
       }
     ],
     "solution": {
@@ -1040,7 +1298,9 @@
       "requiredDeductions": [
         "deduction-013",
         "deduction-014",
-        "deduction-015"
+        "deduction-015",
+        "deduction-033",
+        "deduction-034"
       ],
       "explanation": "Rangkaian bukti menunjukkan bahwa orang yang memiliki akses panel, jejak yang sesuai, dan keberadaan yang konsisten dengan waktu kejadian adalah Reno."
     }
@@ -1239,6 +1499,56 @@
         ],
         "explanation": "Foto dibuat pada kamera yang digunakan Vina. Rehan baru membuka file setelah proses transfer.",
         "unlocks": []
+      },
+      {
+        "prompt": "Apa yang dapat disimpulkan dari metadata foto dan folder kamera?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Foto dibuat pukul 20.17 dan file asli berasal dari kamera yang digunakan Vina."
+          },
+          {
+            "id": "b",
+            "text": "Rehan membuat foto karena ia membuka file di komputer editor."
+          },
+          {
+            "id": "c",
+            "text": "Sari memindahkan file sehingga otomatis menjadi pembuat foto."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-031",
+          "evidence-032"
+        ],
+        "explanation": "Metadata memberikan waktu pembuatan, sedangkan folder kamera menghubungkan file asli dengan perangkat yang digunakan Vina.",
+        "unlocks": [],
+        "id": "deduction-035"
+      },
+      {
+        "prompt": "Mengapa aktivitas Rehan tidak cukup untuk menyimpulkan bahwa ia membuat foto?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Riwayat menunjukkan Rehan membuka file setelah file ditransfer dari kamera ke komputer editor."
+          },
+          {
+            "id": "b",
+            "text": "Rehan tidak pernah membuka file tersebut."
+          },
+          {
+            "id": "c",
+            "text": "Metadata menunjukkan foto dibuat setelah Rehan membuka file."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-034",
+          "evidence-035"
+        ],
+        "explanation": "Rehan tercatat membuka file setelah transfer, sehingga aktivitasnya terjadi setelah proses pembuatan foto.",
+        "unlocks": [],
+        "id": "deduction-036"
       }
     ],
     "solution": {
@@ -1252,7 +1562,9 @@
       "requiredDeductions": [
         "deduction-016",
         "deduction-017",
-        "deduction-018"
+        "deduction-018",
+        "deduction-035",
+        "deduction-036"
       ],
       "explanation": "Evidence membedakan tiga aktivitas: foto dibuat pada kamera Vina, file dipindahkan, lalu dibuka oleh Rehan. Pembuat foto paling kuat adalah Vina."
     }
@@ -1451,6 +1763,56 @@
         ],
         "explanation": "Download berasal dari perangkat Rafi dan diikuti email keluar dari akun Rafi dalam waktu lima menit.",
         "unlocks": []
+      },
+      {
+        "prompt": "Siapa yang memiliki hubungan waktu paling kuat dengan aktivitas download?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Rafi, karena ia merupakan pengguna terakhir sebelum download dan perangkatnya melakukan download."
+          },
+          {
+            "id": "b",
+            "text": "Kevin, karena ia termasuk pengguna yang mengakses dokumen sebelumnya."
+          },
+          {
+            "id": "c",
+            "text": "Nadia, karena ia mengakses dokumen sebelum Rafi."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-039",
+          "evidence-041"
+        ],
+        "explanation": "Access log menempatkan Rafi tepat sebelum download dan device record menghubungkan perangkat download dengannya.",
+        "unlocks": [],
+        "id": "deduction-037"
+      },
+      {
+        "prompt": "Apa yang memperkuat dugaan bahwa download tersebut berkaitan dengan kebocoran?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Email keluar terjadi tidak lama setelah file diunduh oleh perangkat Rafi."
+          },
+          {
+            "id": "b",
+            "text": "Kevin pernah mengakses dokumen sebelum kebocoran."
+          },
+          {
+            "id": "c",
+            "text": "Nadia memiliki akun yang terdaftar di sistem."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-041",
+          "evidence-042"
+        ],
+        "explanation": "Urutan download lalu komunikasi keluar memperkuat hubungan antara aktivitas perangkat Rafi dan kebocoran.",
+        "unlocks": [],
+        "id": "deduction-038"
       }
     ],
     "solution": {
@@ -1464,7 +1826,9 @@
       "requiredDeductions": [
         "deduction-019",
         "deduction-020",
-        "deduction-021"
+        "deduction-021",
+        "deduction-037",
+        "deduction-038"
       ],
       "explanation": "Rafi merupakan hubungan terkuat karena menjadi pengguna terakhir sebelum download, perangkatnya melakukan download, dan akun yang sama mengirim email keluar setelahnya."
     }
@@ -1676,6 +2040,56 @@
         ],
         "explanation": "Intan mengetahui waktu pembukaan, meminta pemeriksaan dilakukan, dan tercatat hadir untuk memeriksa hasil setelah loker dibuka.",
         "unlocks": []
+      },
+      {
+        "prompt": "Apa yang membedakan Faris sebagai pemegang kunci dari orang yang memanfaatkan kesempatan setelah loker dibuka?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Faris menjalankan pemeriksaan dengan kunci, sedangkan Intan memiliki kesempatan berada di sekitar loker setelah loker dibuka."
+          },
+          {
+            "id": "b",
+            "text": "Faris tidak pernah berada di dekat Loker 214."
+          },
+          {
+            "id": "c",
+            "text": "Galang tercatat menggunakan kunci cadangan untuk membuka loker."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-047",
+          "evidence-049"
+        ],
+        "explanation": "Pesan administrasi dan catatan pemeriksaan menunjukkan kesempatan tambahan Intan setelah akses awal dilakukan Faris.",
+        "unlocks": [],
+        "id": "deduction-039"
+      },
+      {
+        "prompt": "Evidence mana yang paling kuat mendukung kesempatan tambahan Intan di sekitar Loker 214?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Catatan pemeriksaan menunjukkan Intan berada di sekitar loker setelah Faris membukanya dan sebelum pemeriksaan ditutup."
+          },
+          {
+            "id": "b",
+            "text": "Buku peminjaman menunjukkan Faris memiliki alasan resmi membawa kunci."
+          },
+          {
+            "id": "c",
+            "text": "CCTV lorong hanya menunjukkan Faris berada dekat loker."
+          }
+        ],
+        "correctOption": "a",
+        "evidenceRequired": [
+          "evidence-049",
+          "evidence-045"
+        ],
+        "explanation": "Catatan pemeriksaan menempatkan Intan pada jendela kesempatan setelah akses awal oleh Faris.",
+        "unlocks": [],
+        "id": "deduction-040"
       }
     ],
     "solution": {
@@ -1688,7 +2102,9 @@
       "requiredDeductions": [
         "deduction-022",
         "deduction-023",
-        "deduction-024"
+        "deduction-024",
+        "deduction-039",
+        "deduction-040"
       ],
       "explanation": "Faris memiliki akses sah dan menjalankan pemeriksaan. Intan mengetahui waktu pembukaan, mengatur pemeriksaan, dan mempunyai kesempatan tambahan setelah loker dibuka."
     }

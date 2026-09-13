@@ -1,4 +1,5 @@
 import { navigate } from '../../app/router.js'
+import { showHowToPlayModal } from '../../shared/ui/info-modal.js'
 
 export function renderLanding(container) {
     container.replaceChildren()
@@ -12,7 +13,7 @@ export function renderLanding(container) {
     const eyebrow = document.createElement('p')
     eyebrow.classList.add('landing-eyebrow')
     eyebrow.textContent =
-        'CASEFILE / INVESTIGATION SYSTEM'
+        'CASEFILE / INTERACTIVE INVESTIGATION QUIZ'
 
     const title = document.createElement('h1')
     title.classList.add('landing-title')
@@ -22,7 +23,12 @@ export function renderLanding(container) {
     const description = document.createElement('p')
     description.classList.add('landing-description')
     description.textContent =
-        'Investigate evidence, connect the clues, and determine who is most responsible.'
+        'Investigate evidence, answer 5 multiple-choice questions, and determine who is most responsible.'
+
+
+    const quizMeta = document.createElement('p')
+    quizMeta.classList.add('landing-quiz-meta')
+    quizMeta.textContent = '8 CASES · 40 QUESTIONS · MULTIPLE CHOICE'
 
     const actions = document.createElement('div')
     actions.classList.add('landing-actions')
@@ -42,7 +48,23 @@ export function renderLanding(container) {
 
     startButton.addEventListener(
         'click',
-        () => navigate('/cases')
+        () => showHowToPlayModal({
+            firstVisit: true,
+            onContinue: () => navigate('/cases')
+        })
+    )
+
+
+    const howToPlayButton = document.createElement('button')
+    howToPlayButton.type = 'button'
+    howToPlayButton.classList.add(
+        'secondary-button',
+        'landing-button'
+    )
+    howToPlayButton.textContent = 'How to Play'
+    howToPlayButton.addEventListener(
+        'click',
+        () => showHowToPlayModal()
     )
 
     const historyLink =
@@ -61,6 +83,7 @@ export function renderLanding(container) {
 
     actions.append(
         startButton,
+        howToPlayButton,
         historyLink
     )
 
@@ -93,6 +116,7 @@ export function renderLanding(container) {
         eyebrow,
         title,
         description,
+        quizMeta,
         actions,
         status
     )

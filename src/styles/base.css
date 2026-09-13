@@ -73,7 +73,6 @@ button:disabled {
 }
 
 
-/* CASEFILE theme system */
 :root[data-theme="light"] {
   color: #241f14;
   background: #efe8d8;

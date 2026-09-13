@@ -14,7 +14,8 @@ import {
 
 import {
     renderBriefing,
-    renderInvestigation
+    renderInvestigation,
+    teardownFloatingTimer
 } from '../features/investigation/investigation.view.js'
 
 import {
@@ -34,6 +35,10 @@ import {
 import {
     createNavbar
 } from '../shared/ui/navbar.js'
+
+import {
+    createFooter
+} from '../shared/ui/footer.js'
 
 import {
     loadCase
@@ -115,6 +120,8 @@ function renderAppRoute(
     app,
     renderPage
 ) {
+    teardownFloatingTimer()
+
     const content =
         createAppShell(app)
 
@@ -143,9 +150,13 @@ function createAppShell(app) {
         'app-content'
     )
 
+    const footer =
+        createFooter()
+
     shell.append(
         navbar,
-        content
+        content,
+        footer
     )
 
     app.append(shell)

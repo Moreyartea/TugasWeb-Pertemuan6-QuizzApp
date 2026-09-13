@@ -70,16 +70,6 @@ export function createInvestigationEngine(
             )
         }
 
-        /*
-         * Penting:
-         * Waktu BELUM dimulai ketika
-         * user baru membuka briefing.
-         *
-         * startedAt sengaja dibuat null.
-         * Waktu baru dimulai ketika
-         * beginInvestigation() dipanggil
-         * setelah countdown selesai.
-         */
         return updateState({
             ...createInitialState(),
             caseId: caseItem.id,
@@ -125,12 +115,6 @@ export function createInvestigationEngine(
             )
         }
 
-        /*
-         * TITIK NOL WAKTU INVESTIGASI.
-         *
-         * startedAt baru dibuat setelah
-         * countdown 3 → 2 → 1 → GO selesai.
-         */
         return updateState({
             ...state,
             phase:

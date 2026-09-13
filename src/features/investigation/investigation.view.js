@@ -196,6 +196,8 @@ export function renderInvestigation(container) {
   const page = document.createElement('main')
   page.classList.add('investigation-page')
 
+  page.append(createPhaseIndicator('INVESTIGATION'))
+
   const header = document.createElement('header')
   header.classList.add('investigation-header')
 
@@ -286,11 +288,11 @@ export function renderInvestigation(container) {
   deductionHeader.classList.add('section-header')
 
   const deductionTitle = document.createElement('h2')
-  deductionTitle.textContent = 'Deduction'
+  deductionTitle.textContent = 'Deduction Quiz'
 
   const deductionDescription = document.createElement('p')
   deductionDescription.textContent =
-    'Gunakan evidence yang telah ditemukan untuk membuat kesimpulan.'
+    'Jawab 5 pertanyaan pilihan ganda berdasarkan evidence yang telah ditemukan.'
 
   deductionHeader.append(
     deductionTitle,
@@ -874,8 +876,11 @@ function renderDeductionForm(
     document.createElement('main')
 
   page.classList.add(
-    'deduction-form-page'
+    'deduction-form-page',
+    'quiz-question-page'
   )
+
+  page.append(createPhaseIndicator('DEDUCTION'))
 
   createFloatingTimer(
     page,
@@ -887,11 +892,33 @@ function renderDeductionForm(
 
   eyebrow.classList.add('eyebrow')
   eyebrow.textContent =
-    'CASEFILE / DEDUCTION'
+    'CASEFILE / DEDUCTION QUIZ'
+
+  const questionIndex = caseItem.deductions.findIndex(
+    (item) => item.id === deductionId
+  ) + 1
+
+  const questionMeta = document.createElement('p')
+  questionMeta.classList.add('quiz-question-meta')
+  questionMeta.textContent =
+    `QUESTION ${String(questionIndex).padStart(2, '0')} / ${String(caseItem.deductions.length).padStart(2, '0')}`
+
+  const progress = document.createElement('div')
+  progress.classList.add('quiz-progress')
+
+  const progressBar = document.createElement('span')
+  progressBar.style.width = `${(questionIndex / caseItem.deductions.length) * 100}%`
+  progress.append(progressBar)
+
+  const instruction = document.createElement('p')
+  instruction.classList.add('quiz-instruction')
+  instruction.textContent = 'SELECT ONE ANSWER'
 
   const title =
     document.createElement('h1')
 
+  title.classList.add('quiz-question-title')
+  title.classList.add('quiz-question-title')
   title.textContent =
     deduction.prompt
 
@@ -1026,6 +1053,9 @@ function renderDeductionForm(
 
   page.append(
     eyebrow,
+    questionMeta,
+    progress,
+    instruction,
     title,
     form
   )
@@ -1049,13 +1079,20 @@ function renderDeductionFeedback(
     document.createElement('main')
 
   page.classList.add(
-    'deduction-feedback-page'
+    'deduction-feedback-page',
+    'quiz-feedback-page'
   )
+
+  page.append(createPhaseIndicator('DEDUCTION'))
 
   createFloatingTimer(
     page,
     engine
   )
+
+  const eyebrow = document.createElement('p')
+  eyebrow.classList.add('eyebrow')
+  eyebrow.textContent = 'CASEFILE / DEDUCTION QUIZ'
 
   const status =
     document.createElement('span')
@@ -1115,6 +1152,7 @@ function renderDeductionFeedback(
   )
 
   page.append(
+    eyebrow,
     status,
     title,
     explanation,
@@ -1150,11 +1188,11 @@ function createFloatingTimer(
 
   timer.style.position = 'fixed'
 
-  timer.style.top = '76px'
+  timer.style.top = '12px'
 
   timer.style.right = '24px'
 
-  timer.style.zIndex = '900'
+  timer.style.zIndex = '1050'
 
   timer.style.minWidth = '112px'
   timer.style.padding = '9px 14px'
@@ -1229,7 +1267,7 @@ function createFloatingTimer(
     timerValue
   )
 
-  page.append(timer)
+  document.body.append(timer)
   applyInvestigationThemeStyles()
 
   return timer
@@ -1288,6 +1326,16 @@ function stopInvestigationTimer() {
 
     investigationTimerInterval =
       null
+  }
+}
+
+export function teardownFloatingTimer() {
+  stopInvestigationTimer()
+
+  const timer = document.querySelector('.investigation-timer')
+
+  if (timer) {
+    timer.remove()
   }
 }
 
@@ -1559,6 +1607,37 @@ function startInvestigationCountdown(
       )
     }
   }, 1000)
+}
+
+function createPhaseIndicator(activePhase) {
+  const indicator = document.createElement('div')
+  indicator.classList.add('phase-indicator')
+
+  const phases = [
+    ['01', 'INVESTIGATION'],
+    ['02', 'DEDUCTION'],
+    ['03', 'SUSPECT']
+  ]
+
+  phases.forEach(([number, label]) => {
+    const item = document.createElement('span')
+    item.classList.add('phase-indicator-item')
+
+    if (label === activePhase) {
+      item.classList.add('is-active')
+    }
+
+    const numberElement = document.createElement('strong')
+    numberElement.textContent = number
+
+    const labelElement = document.createElement('span')
+    labelElement.textContent = label
+
+    item.append(numberElement, labelElement)
+    indicator.append(item)
+  })
+
+  return indicator
 }
 
 function canAccessEvidence(

@@ -15,11 +15,11 @@ export function renderHistory(container) {
   eyebrow.textContent = 'CASEFILE / ARCHIVE'
 
   const title = document.createElement('h1')
-  title.textContent = 'Riwayat Investigasi'
+  title.textContent = 'Quiz History'
 
   const description = document.createElement('p')
   description.classList.add('page-description')
-  description.textContent = 'Daftar hasil investigasi yang tersimpan pada browser ini.'
+  description.textContent = 'Daftar hasil quiz investigasi yang tersimpan pada browser ini.'
 
   const backLink = document.createElement('a')
   backLink.href = '/cases'
