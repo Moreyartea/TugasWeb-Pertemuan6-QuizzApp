@@ -1,4 +1,4 @@
-const CASES_URL = '/src/infrastructure/data/cases.json'
+const CASES_URL = '/data/cases.json'
 
 export async function getCases() {
     const response = await fetch(CASES_URL)
